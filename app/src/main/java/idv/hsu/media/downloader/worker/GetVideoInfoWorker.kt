@@ -13,7 +13,6 @@ import idv.hsu.media.downloader.db.MyVideoInfoDao
 import idv.hsu.media.downloader.vo.toMyVideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
 @HiltWorker
 class GetVideoInfoWorker @AssistedInject constructor(
@@ -25,11 +24,16 @@ class GetVideoInfoWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val url = inputData.getString(KEY_URL)
+            ?: return Result.failure(
+                workDataOf(
+                    KEY_RESULT to "url is null"
+                )
+            )
 
         return withContext(Dispatchers.IO) {
             try {
                 val videoInfo = ytdlp.getInfo(url)
-                repoMyVideoInfoDao.addMyVideoInfo(videoInfo.toMyVideoInfo())
+                repoMyVideoInfoDao.addMyVideoInfo(videoInfo.toMyVideoInfo(url))
                 Result.success()
             } catch (e: Exception) {
                 Result.failure(

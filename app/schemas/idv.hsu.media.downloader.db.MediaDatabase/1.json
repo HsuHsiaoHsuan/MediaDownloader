@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "02f671ee346799b2fe2a3cf1676bc835",
+    "identityHash": "d665766fa112002734aea5257fb44e79",
     "entities": [
       {
         "tableName": "search_record_table",
@@ -32,11 +32,17 @@
       },
       {
         "tableName": "video_info_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`original_url` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`original_url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`url`))",
         "fields": [
           {
-            "fieldPath": "originalUrl",
-            "columnName": "original_url",
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "thumbnail",
+            "columnName": "thumbnail",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -67,7 +73,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "original_url"
+            "url"
           ],
           "autoGenerate": false
         },
@@ -78,7 +84,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '02f671ee346799b2fe2a3cf1676bc835')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd665766fa112002734aea5257fb44e79')"
     ]
   }
 }

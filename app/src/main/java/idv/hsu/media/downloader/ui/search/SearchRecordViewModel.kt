@@ -8,8 +8,6 @@ import idv.hsu.media.downloader.po.SearchRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,13 +18,15 @@ class SearchRecordViewModel @Inject constructor(
 
     val allSearchRecord = repoSearch.allSearchRecord
 
+    val allSearchAndInfo = repoSearch.allSearchAndInfo
+
     private val _uiState = MutableSharedFlow<SearchRecordUiState>()
     val uiState: SharedFlow<SearchRecordUiState> = _uiState
 
     fun addSearch(url: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val result = repoSearch.addRecord(SearchRecord(url, System.currentTimeMillis()))
+                val result = repoSearch.addSearchRecord(SearchRecord(url, System.currentTimeMillis()))
                 if (result > 0) {
                     _uiState.emit(SearchRecordUiState.AddSearchOk(url))
                 } else {

@@ -10,7 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
+import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentSearchBinding
 import idv.hsu.media.downloader.viewmodel.DownloadMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
@@ -46,7 +49,9 @@ class SearchFragment : Fragment() {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 binding.inputUrl.text?.let {
                     val url = it.trim().toString()
-                    searchRecordViewModel.addSearch(url)
+                    if (url.isNotBlank()) {
+                        searchRecordViewModel.addSearch(url)
+                    }
                 }
                 true
             } else {
@@ -67,17 +72,13 @@ class SearchFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 searchRecordViewModel.uiState.collect {
                     when (it) {
-                        is SearchRecordUiState.AddSearchOk -> {
-                            // a new one
-                            Timber.e("FREEMAN, add search ok: ${it.url}")
+                        is SearchRecordUiState.AddSearchOk -> { // a new one
                             parseMediaViewModel.getVideoInfo(it.url)
                         }
-                        is SearchRecordUiState.AddSearchNone -> {
-                            // it must already have
+                        is SearchRecordUiState.AddSearchNone -> { // already have
                             Timber.e("FREEMAN, add search none: ${it.url}")
                         }
-                        is SearchRecordUiState.AddSearchFail -> {
-                            // show refresh icon
+                        is SearchRecordUiState.AddSearchFail -> { // add fail
                             Timber.e("FREEMAN, add search fail: ${it.url}")
                         }
                     }
@@ -86,8 +87,8 @@ class SearchFragment : Fragment() {
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                searchRecordViewModel.allSearchRecord.collect {
-                    Timber.e("FREEMAN, all search: $it")
+                searchRecordViewModel.allSearchAndInfo.collect {
+                    Timber.e("FREEMAN, all searchNinfo: $it")
                     adapter.setData(it)
                 }
             }

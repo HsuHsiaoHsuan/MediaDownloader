@@ -14,33 +14,43 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
 
-    @Provides
-    @Singleton
-    fun provideSearchRecordDatabase(@ApplicationContext context: Context): SearchRecordDatabase {
-        return Room.databaseBuilder(
-            context,
-            SearchRecordDatabase::class.java,
-            "search_record"
-        ).build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideSearchRecordDatabase(@ApplicationContext context: Context): SearchRecordDatabase {
+//        return Room.databaseBuilder(
+//            context,
+//            SearchRecordDatabase::class.java,
+//            "search_record"
+//        ).build()
+//    }
 
     @Provides
-    fun provideSearchRecordDao(database: SearchRecordDatabase): SearchRecordDao {
+    fun provideSearchRecordDao(database: MediaDatabase): SearchRecordDao {
         return database.SearchRecordDao()
     }
 
+//    @Provides
+//    @Singleton
+//    fun provideMyVideoInfoDatabase(@ApplicationContext context: Context): MyVideoInfoDatabase {
+//        return Room.databaseBuilder(
+//            context,
+//            MyVideoInfoDatabase::class.java,
+//            "my_video_info"
+//        ).build()
+//    }
+
     @Provides
-    @Singleton
-    fun provideMyVideoInfoDatabase(@ApplicationContext context: Context): MyVideoInfoDatabase {
-        return Room.databaseBuilder(
-            context,
-            MyVideoInfoDatabase::class.java,
-            "my_video_info"
-        ).build()
+    fun provideMyVideoInfoDao(database: MediaDatabase): MyVideoInfoDao {
+        return database.MyVideoInfoDao()
     }
 
     @Provides
-    fun provideMyVideoInfoDao(database: MyVideoInfoDatabase): MyVideoInfoDao {
-        return database.MyVideoInfoDao()
+    @Singleton
+    fun provideMediaDatabase(@ApplicationContext context: Context): MediaDatabase {
+        return Room.databaseBuilder(
+            context,
+            MediaDatabase::class.java,
+            "media_db"
+        ).build()
     }
 }

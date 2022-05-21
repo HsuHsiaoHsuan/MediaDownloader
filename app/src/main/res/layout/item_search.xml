@@ -4,17 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="8dp"
-    android:paddingStart="16dp">
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
+
+    <ImageView
+        android:id="@+id/image_cover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toBottomOf="@+id/text_subtitle"
+        app:layout_constraintDimensionRatio="H,3:4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_title" />
 
     <TextView
-        android:id="@+id/text_url"
-        android:layout_width="match_parent"
+        android:id="@+id/text_title"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="start"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginHorizontal="8dp"
+        android:ellipsize="end"
+        android:lines="2"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        android:textColor="?android:textColorPrimary"
+        app:layout_constraintEnd_toStartOf="@+id/button_action"
+        app:layout_constraintStart_toEndOf="@+id/image_cover"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="TEST" />
+        tools:text="TITLE_TITLE_TITLE_TITLE_TITLE_TITLE_TITLE_TITLE_TITLE_TITLE_TITLE" />
+
+    <TextView
+        android:id="@+id/text_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/button_action"
+        app:layout_constraintStart_toEndOf="@+id/image_cover"
+        app:layout_constraintTop_toBottomOf="@+id/text_title"
+        tools:text="subtitle_subtitle_subtitle_subtitle_subtitle_subtitle_subtitle_" />
+
+    <ImageButton
+        android:id="@+id/button_action"
+        style="@style/ImageButtonTint"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?android:attr/actionBarItemBackground"
+        android:scaleType="centerInside"
+        android:src="@drawable/baseline_download_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

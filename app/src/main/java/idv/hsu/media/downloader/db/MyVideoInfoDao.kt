@@ -12,7 +12,7 @@ interface MyVideoInfoDao {
     @Query("SELECT * FROM video_info_table")
     fun getAllVideoInfo(): Flow<List<MyVideoInfo>>
 
-    @Query("SELECT * FROM video_info_table WHERE original_url = :url")
+    @Query("SELECT * FROM video_info_table WHERE url = :url")
     suspend fun getMyVideoInfo(url: String): MyVideoInfo
 
     @Insert(entity = MyVideoInfo::class, onConflict = OnConflictStrategy.REPLACE)

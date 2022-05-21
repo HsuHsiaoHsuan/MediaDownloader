@@ -1,6 +1,7 @@
 package idv.hsu.media.downloader.db
 
 import androidx.room.*
+import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.po.SearchRecord
 import kotlinx.coroutines.flow.Flow
 
@@ -18,4 +19,8 @@ interface SearchRecordDao {
 
     @Query("DELETE FROM search_record_table")
     suspend fun clear()
+
+    @Transaction
+    @Query("SELECT * FROM search_record_table ORDER BY search_time DESC")
+    fun getAllSearchAndInfo(): Flow<List<SearchAndInfo>>
 }

@@ -14,5 +14,7 @@ data class SearchRecord(
     @PrimaryKey(autoGenerate = false)
     val url: String,
     @ColumnInfo(name = "search_time")
-    val searchTime: Long
+    val searchTime: Long,
+    @ColumnInfo(name = "convert_state") // 0: nothing, 1: converting, -1: fail
+    val convertState: Int = 0
 ) : Parcelable
