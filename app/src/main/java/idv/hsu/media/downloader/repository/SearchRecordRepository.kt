@@ -1,6 +1,7 @@
 package idv.hsu.media.downloader.repository
 
 import idv.hsu.media.downloader.db.SearchRecordDao
+import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.po.SearchRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -12,15 +13,17 @@ class SearchRecordRepository @Inject constructor(
 ) {
     val allSearchRecord: Flow<List<SearchRecord>> = searchDao.getAllSearchRecord()
 
-    suspend fun addRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
+    val allSearchAndInfo: Flow<List<SearchAndInfo>> = searchDao.getAllSearchAndInfo()
+
+    suspend fun addSearchRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
         searchDao.addSearchRecord(record)
     }
 
-    suspend fun delRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
+    suspend fun delSearchRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
         searchDao.deleteSearchRecord(record)
     }
 
-    suspend fun clearRecord() = withContext(Dispatchers.IO) {
+    suspend fun clearSearchRecord() = withContext(Dispatchers.IO) {
         searchDao.clear()
     }
 }
