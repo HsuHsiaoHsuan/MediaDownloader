@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.ItemSearchBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 
@@ -30,7 +31,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         if (myVideoInfo == null) {
             holder.imageCover.isVisible = false
             holder.textTitle.text = item.search.url
-            holder.textSubtitle.text = "Parsing..."
+            holder.textSubtitle.text = holder.itemView.context.resources.getString(R.string.parsing)
             holder.buttonAction.isVisible = false
         } else {
             holder.imageCover.isVisible = true
@@ -61,10 +62,18 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         val textSubtitle = binding.textSubtitle
         val buttonAction = binding.buttonAction
 
+        init {
+            itemView.setOnClickListener(this)
+            buttonAction.setOnClickListener(this)
+        }
+
         override fun onClick(view: View?) {
             when (view) {
                 itemView -> {
-
+                    listener?.onItemClick(values[adapterPosition])
+                }
+                buttonAction -> {
+                    listener?.onDownloadClick(values[adapterPosition])
                 }
             }
         }
@@ -72,6 +81,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface OnSearchClickListener {
         fun onItemClick(data: SearchAndInfo)
+        fun onDownloadClick(data: SearchAndInfo)
     }
 }
 

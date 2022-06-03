@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="idv.hsu.media.downloader.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_download"
+        android:name="idv.hsu.media.downloader.ui.download.DownloadFragment"
+        android:label="@string/title_download"
+        tools:layout="@layout/fragment_download" />
 
     <fragment
         android:id="@+id/navigation_notifications"

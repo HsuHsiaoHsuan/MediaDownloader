@@ -1,10 +1,10 @@
-package idv.hsu.media.downloader.ui.dashboard
+package idv.hsu.media.downloader.ui.download
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class DownloadViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"

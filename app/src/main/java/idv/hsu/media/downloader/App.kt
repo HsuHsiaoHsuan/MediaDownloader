@@ -1,6 +1,7 @@
 package idv.hsu.media.downloader
 
 import android.app.Application
+import android.os.Build
 import android.util.Log
 import android.webkit.WebView
 import androidx.hilt.work.HiltWorkerFactory
@@ -9,7 +10,9 @@ import com.yausername.ffmpeg.FFmpeg
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import dagger.hilt.android.HiltAndroidApp
+import idv.hsu.media.downloader.utils.createNotificationChannel
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -34,6 +37,11 @@ class App : Application(), Configuration.Provider {
         } else {
             Timber.plant(ReleaseTree())
         }
+
+        val downloadTitle = getString(R.string.download).replaceFirstChar {
+            if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
+        }
+        createNotificationChannel(this, downloadTitle)
     }
 
     private class ReleaseTree : Timber.Tree() {

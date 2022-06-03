@@ -2,7 +2,7 @@ package idv.hsu.media.downloader.repository
 
 import idv.hsu.media.downloader.db.SearchRecordDao
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
-import idv.hsu.media.downloader.po.SearchRecord
+import idv.hsu.media.downloader.vo.SearchRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

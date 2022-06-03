@@ -2,7 +2,7 @@ package idv.hsu.media.downloader.db
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import idv.hsu.media.downloader.po.SearchRecord
+import idv.hsu.media.downloader.vo.SearchRecord
 import idv.hsu.media.downloader.vo.MyVideoInfo
 
 @Database(entities = [SearchRecord::class, MyVideoInfo::class], version = 1, exportSchema = true)

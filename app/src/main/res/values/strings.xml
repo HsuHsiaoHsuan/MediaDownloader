@@ -1,6 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="app_name">MediaDownloader</string>
-    <string name="title_search">Search</string>
-    <string name="title_dashboard">Dashboard</string>
+
+    <string name="download">download</string>
+
+    <string name="downloading">downloading</string>
+
+    <string name="parsing">parsing…</string>
+
+    <string name="title_download">Download</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_search">Search</string>
+
+    <string name="percentage" translatable="false">"%s %%"</string>
 </resources>

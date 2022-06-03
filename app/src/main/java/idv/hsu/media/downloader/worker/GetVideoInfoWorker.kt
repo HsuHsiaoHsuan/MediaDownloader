@@ -11,8 +11,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.db.MyVideoInfoDao
 import idv.hsu.media.downloader.db.SearchRecordDao
-import idv.hsu.media.downloader.po.SearchRecord
-import idv.hsu.media.downloader.vo.toMyVideoInfo
+import idv.hsu.media.downloader.vo.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -33,18 +32,18 @@ class GetVideoInfoWorker @AssistedInject constructor(
                 )
             )
         val searchRecord = repoSearchRecordDao.getSearchRecord(url)
-        searchRecord.convertState = SearchRecord.STATE_CONVERTING
+        searchRecord.convertState = CONVERT_STATE_CONVERTING
         repoSearchRecordDao.updateSearchRecord(searchRecord)
 
         return withContext(Dispatchers.IO) {
             try {
                 val videoInfo = ytdlp.getInfo(url)
                 repoMyVideoInfoDao.addMyVideoInfo(videoInfo.toMyVideoInfo(url))
-                searchRecord.convertState = SearchRecord.STATE_DONE
+                searchRecord.convertState = CONVERT_STATE_DONE
                 repoSearchRecordDao.updateSearchRecord(searchRecord)
                 Result.success()
             } catch (e: Exception) {
-                searchRecord.convertState = SearchRecord.STATE_FAIL
+                searchRecord.convertState = CONVERT_STATE_FAIL
                 repoSearchRecordDao.updateSearchRecord(searchRecord)
                 Result.failure(
                     workDataOf(

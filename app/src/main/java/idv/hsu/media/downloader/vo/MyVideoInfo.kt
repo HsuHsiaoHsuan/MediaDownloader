@@ -16,8 +16,7 @@ data class MyVideoInfo(
     val thumbnail: String = "",
     val title: String = "",
     val uploader: String = "",
-    val duration: Int = 0,
-    val description: String = "",
+    val duration: Int = 0
 ) : Parcelable
 
 fun VideoInfo.toMyVideoInfo(userInputUrl: String): MyVideoInfo =
@@ -26,6 +25,5 @@ fun VideoInfo.toMyVideoInfo(userInputUrl: String): MyVideoInfo =
         thumbnail = this.thumbnail,
         title = this.title,
         uploader = this.uploader,
-        duration = this.duration,
-        description = this.description
+        duration = this.duration
     )

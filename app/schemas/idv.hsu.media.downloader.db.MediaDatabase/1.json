@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d8c7a34a0abf2c4c6b5eb05a1423ce17",
+    "identityHash": "6f1aca40af45326b931545d871738f17",
     "entities": [
       {
         "tableName": "search_record_table",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "video_info_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, PRIMARY KEY(`url`))",
         "fields": [
           {
             "fieldPath": "url",
@@ -69,12 +69,6 @@
             "columnName": "duration",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "description",
-            "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -90,7 +84,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8c7a34a0abf2c4c6b5eb05a1423ce17')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f1aca40af45326b931545d871738f17')"
     ]
   }
 }

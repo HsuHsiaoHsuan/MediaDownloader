@@ -2,7 +2,7 @@ package idv.hsu.media.downloader.db
 
 import androidx.room.*
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
-import idv.hsu.media.downloader.po.SearchRecord
+import idv.hsu.media.downloader.vo.SearchRecord
 import kotlinx.coroutines.flow.Flow
 
 @Dao

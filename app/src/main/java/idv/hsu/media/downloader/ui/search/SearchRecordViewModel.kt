@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import idv.hsu.media.downloader.repository.SearchRecordRepository
-import idv.hsu.media.downloader.po.SearchRecord
+import idv.hsu.media.downloader.vo.SearchRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow

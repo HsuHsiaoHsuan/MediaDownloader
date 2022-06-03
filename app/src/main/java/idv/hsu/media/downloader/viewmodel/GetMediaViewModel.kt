@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import idv.hsu.media.downloader.repository.YtDlpRepository
+import idv.hsu.media.downloader.worker.MediaType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -16,18 +17,18 @@ class DownloadMediaViewModel @Inject constructor(
     private val repoYtdlp: YtDlpRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableSharedFlow<DownloadMediaUiState>()
-    val uiState: SharedFlow<DownloadMediaUiState> = _uiState
+//    private val _uiState = MutableSharedFlow<DownloadMediaUiState>()
+//    val uiState: SharedFlow<DownloadMediaUiState> = _uiState
 
-    fun downloadMedia(url: String) {
+    fun downloadMedia(url: String, fileName: String, @MediaType type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repoYtdlp.getVideo(url)
+            repoYtdlp.getVideo(url, fileName, type)
         }
     }
 }
 
-sealed class DownloadMediaUiState {
-    data class DownloadingUrl(val url: String) : ParseMediaUiState()
-    data class DownloadOk(val url: String, val videoInfo: VideoInfo) : ParseMediaUiState()
-    data class DownloadFail(val url: String, val message: String) : ParseMediaUiState()
-}
+//sealed class DownloadMediaUiState {
+//    data class DownloadingUrl(val url: String) : ParseMediaUiState()
+//    data class DownloadOk(val url: String, val videoInfo: VideoInfo) : ParseMediaUiState()
+//    data class DownloadFail(val url: String, val message: String) : ParseMediaUiState()
+//}

@@ -10,18 +10,18 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
-import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentSearchBinding
+import idv.hsu.media.downloader.db.relation.SearchAndInfo
+import idv.hsu.media.downloader.ext.reformatFileName
 import idv.hsu.media.downloader.viewmodel.DownloadMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchFragment : Fragment() {
+class SearchFragment : Fragment(), SearchAdapter.OnSearchClickListener {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -31,7 +31,7 @@ class SearchFragment : Fragment() {
     private val downloadMediaViewModel: DownloadMediaViewModel by viewModels()
 
     private val adapter = SearchAdapter().apply {
-//        listener = this@SearchFragment
+        listener = this@SearchFragment
     }
 
     override fun onCreateView(
@@ -47,16 +47,15 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.inputUrl.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                binding.inputUrl.text?.let {
-                    val url = it.trim().toString()
-                    if (url.isNotBlank()) {
-                        searchRecordViewModel.addSearch(url)
-                    }
-                }
+                search()
                 true
             } else {
                 false
             }
+        }
+
+        binding.buttonSearch.setOnClickListener {
+            search()
         }
 
         with(binding.listSearch) {
@@ -88,10 +87,24 @@ class SearchFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 searchRecordViewModel.allSearchAndInfo.collect {
-                    Timber.e("FREEMAN, all searchNinfo: $it")
+//                    Timber.e("FREEMAN, all searchNinfo: $it")
                     adapter.setData(it)
                 }
             }
+        }
+    }
+
+    override fun onItemClick(data: SearchAndInfo) {
+        Timber.e("FREEMAN, onItemClick: $data")
+    }
+
+    override fun onDownloadClick(data: SearchAndInfo) {
+        Timber.e("FREEMAN, onDownloadClick: $data")
+        val url = data.myVideoInfo?.url
+        val title =
+            data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
+        if (url != null) {
+            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
         }
     }
 
@@ -99,5 +112,14 @@ class SearchFragment : Fragment() {
         super.onDestroyView()
         binding.listSearch.adapter = null
         _binding = null
+    }
+
+    private fun search() {
+        binding.inputUrl.text?.let {
+            val url = it.trim().toString()
+            if (url.isNotBlank()) {
+                searchRecordViewModel.addSearch(url)
+            }
+        }
     }
 }
