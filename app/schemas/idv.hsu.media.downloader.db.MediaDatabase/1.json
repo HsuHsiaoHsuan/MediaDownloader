@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6f1aca40af45326b931545d871738f17",
+    "identityHash": "a7baf95773dac2c2cfc1754ec78f7bf8",
     "entities": [
       {
         "tableName": "search_record_table",
@@ -79,12 +79,64 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "download_record_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `file_name` TEXT NOT NULL, `file_extension` TEXT NOT NULL, `download_time` INTEGER NOT NULL, `download_progress` REAL NOT NULL, `download_state` INTEGER NOT NULL, PRIMARY KEY(`url`, `file_name`, `file_extension`))",
+        "fields": [
+          {
+            "fieldPath": "url",
+            "columnName": "url",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fileName",
+            "columnName": "file_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fileExtension",
+            "columnName": "file_extension",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadTime",
+            "columnName": "download_time",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadProgress",
+            "columnName": "download_progress",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "downloadState",
+            "columnName": "download_state",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "url",
+            "file_name",
+            "file_extension"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6f1aca40af45326b931545d871738f17')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a7baf95773dac2c2cfc1754ec78f7bf8')"
     ]
   }
 }

@@ -108,12 +108,6 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchClickListener {
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding.listSearch.adapter = null
-        _binding = null
-    }
-
     private fun search() {
         binding.inputUrl.text?.let {
             val url = it.trim().toString()
@@ -121,5 +115,11 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchClickListener {
                 searchRecordViewModel.addSearch(url)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.listSearch.adapter = null
+        _binding = null
     }
 }

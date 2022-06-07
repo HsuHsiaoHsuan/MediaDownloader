@@ -5,20 +5,27 @@ import androidx.annotation.IntDef
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Keep
 @Parcelize
-@Entity(tableName = "download_record_table")
+@Entity(
+    tableName = "download_record_table",
+    primaryKeys = ["url", "file_name", "file_extension"]
+)
 data class DownloadRecord(
-    @PrimaryKey(autoGenerate = false)
     val url: String,
+    @ColumnInfo(name = "file_name")
+    val fileName: String,
+    @ColumnInfo(name = "file_extension")
+    val fileExtension: String,
     @ColumnInfo(name = "download_time")
     val downloadTime: Long,
+    @ColumnInfo(name = "download_progress")
+    var downloadProgress: Float = 0f,
     @DownloadState
     @ColumnInfo(name = "download_state")
-    val downloadState: Int = DOWNLOAD_STATE_INIT
+    var downloadState: Int = DOWNLOAD_STATE_INIT
 ) : Parcelable
 
 @IntDef(

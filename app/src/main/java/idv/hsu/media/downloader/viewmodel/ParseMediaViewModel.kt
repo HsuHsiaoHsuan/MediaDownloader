@@ -24,7 +24,7 @@ class ParseMediaViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.emit(ParseMediaUiState.ParsingUrl(url))
             try {
-                val videoInfo = repoYtdlp.getVideoInfo(url)
+                val videoInfo = repoYtdlp.getMediaInfo(url)
                 if (videoInfo != null) {
                     _uiState.emit(ParseMediaUiState.ParseOk(url))
                 } else {
