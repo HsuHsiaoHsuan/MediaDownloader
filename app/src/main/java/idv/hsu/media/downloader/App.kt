@@ -24,18 +24,18 @@ class App : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
 
-        try {
-            YoutubeDL.getInstance().init(this)
-            FFmpeg.getInstance().init(this)
-        } catch (e: YoutubeDLException) {
-            Timber.e("failed to initialize youtubedl-android: $e")
-        }
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
             WebView.setWebContentsDebuggingEnabled(true);
         } else {
             Timber.plant(ReleaseTree())
+        }
+
+        try {
+            YoutubeDL.getInstance().init(this)
+            FFmpeg.getInstance().init(this)
+        } catch (e: YoutubeDLException) {
+            Timber.e("failed to initialize youtubedl-android: $e")
         }
 
         val downloadTitle = getString(R.string.download).replaceFirstChar {
