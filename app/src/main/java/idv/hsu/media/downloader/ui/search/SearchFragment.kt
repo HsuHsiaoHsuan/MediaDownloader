@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class SearchFragment : Fragment(), SearchAdapter.OnSearchClickListener {
+class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!

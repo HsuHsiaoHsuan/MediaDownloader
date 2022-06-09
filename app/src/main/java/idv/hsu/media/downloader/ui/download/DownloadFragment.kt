@@ -11,17 +11,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.databinding.FragmentDownloadBinding
+import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.viewmodel.DownloadRecordViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
-class DownloadFragment : Fragment() {
+class DownloadFragment : Fragment(), DownloadAdapter.OnDownloadRecordClickListener {
 
     private var _binding: FragmentDownloadBinding? = null
+    private val binding get() = _binding!!
+
     private val downloadRecordViewModel: DownloadRecordViewModel by viewModels()
 
-    private val binding get() = _binding!!
+    private val adapter = DownloadAdapter().apply {
+        listener = this@DownloadFragment
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,12 +34,15 @@ class DownloadFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentDownloadBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        with(binding.listDownloadRecord) {
+            adapter = this@DownloadFragment.adapter
+            setHasFixedSize(true)
+        }
         subscribeToObservers()
     }
 
@@ -42,12 +50,16 @@ class DownloadFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 downloadRecordViewModel.allDownloadRecord.collect {
-                    it.forEach {
-                        Timber.e("FREEMAN, ${it.download.url}, ${it.download.downloadProgress}")
-                    }
+                    adapter.setData(it)
                 }
             }
         }
+    }
+
+    override fun onItemClick(data: SearchAndInfo) {
+    }
+
+    override fun onActionClick(data: SearchAndInfo) {
     }
 
     override fun onDestroyView() {

@@ -12,6 +12,7 @@ import androidx.annotation.IntDef
 import androidx.core.content.FileProvider
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
+import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
@@ -24,6 +25,9 @@ import idv.hsu.media.downloader.utils.createForegroundDownloadInfo
 import idv.hsu.media.downloader.utils.updateForegroundDownloadInfo
 import idv.hsu.media.downloader.vo.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -109,7 +113,7 @@ class DownloadMediaWorker @AssistedInject constructor(
                 ytdlp.execute(request) { progress, etaInSeconds, line ->
                     updateForegroundDownloadInfo(applicationContext, id, fileName, progress)
                     downloadRecord.downloadProgress = progress
-                    downloadRecord.downloadState = DOWNLOAD_STATE_DOWNLOADING
+                    downloadRecord.downloadState = if (progress < 0) DOWNLOAD_STATE_PARSING else DOWNLOAD_STATE_DOWNLOADING
                     launch {
                         repoDownloadRecord.updateDownloadRecord(downloadRecord)
                     }
