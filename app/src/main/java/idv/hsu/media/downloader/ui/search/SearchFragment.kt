@@ -2,21 +2,26 @@ package idv.hsu.media.downloader.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.view.menu.MenuBuilder
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentSearchBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.ext.reformatFileName
 import idv.hsu.media.downloader.viewmodel.DownloadMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -80,6 +85,7 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
                         is SearchRecordUiState.AddSearchFail -> { // add fail
                             Timber.e("FREEMAN, add search fail: ${it.url}")
                         }
+                        else -> {}
                     }
                 }
             }
@@ -98,14 +104,34 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
         Timber.e("FREEMAN, onItemClick: $data")
     }
 
-    override fun onDownloadClick(data: SearchAndInfo) {
-        Timber.e("FREEMAN, onDownloadClick: $data")
+    override fun onDownloadClick(data: SearchAndInfo, view: View) {
         val url = data.myVideoInfo?.url
         val title =
             data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
-        if (url != null) {
-            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
-        }
+        PopupMenu(requireActivity(), view).apply {
+            menuInflater.inflate(R.menu.menu_search_record, this.menu)
+            if (this.menu is MenuBuilder) {
+                val menuBuilder = this.menu as MenuBuilder
+                menuBuilder.setOptionalIconsVisible(true)
+            }
+            setOnMenuItemClickListener { item: MenuItem ->
+                when (item.itemId) {
+                    R.id.menu_item_audio -> {
+                        if (url != null) {
+                            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
+                        }
+                        true
+                    }
+                    R.id.menu_item_video -> {
+                        if (url != null) {
+                            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
+                        }
+                        true
+                    }
+                }
+                false
+            }
+        }.show()
     }
 
     private fun search() {

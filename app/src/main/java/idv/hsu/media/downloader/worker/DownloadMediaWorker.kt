@@ -12,7 +12,6 @@ import androidx.annotation.IntDef
 import androidx.core.content.FileProvider
 import androidx.hilt.work.HiltWorker
 import androidx.work.*
-import com.yausername.youtubedl_android.DownloadProgressCallback
 import com.yausername.youtubedl_android.YoutubeDL
 import com.yausername.youtubedl_android.YoutubeDLException
 import com.yausername.youtubedl_android.YoutubeDLRequest
@@ -22,12 +21,10 @@ import idv.hsu.media.downloader.BuildConfig
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.repository.DownloadRecordRepository
 import idv.hsu.media.downloader.utils.createForegroundDownloadInfo
+import idv.hsu.media.downloader.utils.downloadFolder
 import idv.hsu.media.downloader.utils.updateForegroundDownloadInfo
 import idv.hsu.media.downloader.vo.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.channels.trySendBlocking
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -43,10 +40,7 @@ class DownloadMediaWorker @AssistedInject constructor(
     private val repoDownloadRecord: DownloadRecordRepository
 ) : CoroutineWorker(context, params) {
 
-    private val downloadFolder = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        context.getString(R.string.app_name)
-    )
+    private val downloadFolder = context.downloadFolder()
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         return super.getForegroundInfo()
@@ -59,31 +53,33 @@ class DownloadMediaWorker @AssistedInject constructor(
         val fileName = inputData.getString(KEY_TITLE) ?: kotlin.run {
             return Result.failure(workDataOf(KEY_RESULT to "no title input"))
         }
-        val fileExtension = when (inputData.getInt(KEY_TYPE, MEDIA_TYPE_AUDIO)) {
-            MEDIA_TYPE_AUDIO -> "mp3"
-            MEDIA_TYPE_VIDEO -> "mp4"
-            else -> "mp3"
+        val mediaType = inputData.getInt(KEY_TYPE, MEDIA_TYPE_AUDIO)
+        val fileExtension = if (mediaType == MEDIA_TYPE_VIDEO) {
+            "mp4"
+        } else {
+            "mp3"
         }
 
         val request = YoutubeDLRequest(url).apply {
-            addOption("-x")
-            addOption("--audio-format", fileExtension)
+            if (mediaType == MEDIA_TYPE_AUDIO) {
+                addOption("-x")
+                addOption("--audio-format", fileExtension)
+                addOption("--embed-thumbnail")
+            } else {
+                addOption("-f", "v+a/b")
+            }
             addOption("--no-mtime")
-//            addOption("--restrict-filenames")
-//            addOption("--trim-filenames", 120)
             addOption("--parse-metadata", "description:$url")
             addOption(
                 "--parse-metadata",
                 "album:${context.getString(idv.hsu.media.downloader.R.string.app_name)}"
             )
             addOption("--add-metadata")
-            addOption("--embed-thumbnail")
             addOption("-P", downloadFolder.absolutePath)
             if (BuildConfig.DEBUG) {
                 addOption("-v")
             }
-            addOption("-o", "$fileName.%(ext)s")
-//            addOption("-o", "%(title)s.%(ext)s")
+            addOption("-o", "$fileName.$fileExtension")
         }
 
 

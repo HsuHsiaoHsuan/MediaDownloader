@@ -13,4 +13,8 @@
     <string name="title_search">Search</string>
 
     <string name="percentage" translatable="false">"%s %%"</string>
+
+    <string name="video">Video</string>
+    <string name="audio">Audio</string>
+    <string name="delete">Delete</string>
 </resources>

@@ -73,7 +73,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                     listener?.onItemClick(values[adapterPosition])
                 }
                 buttonAction -> {
-                    listener?.onDownloadClick(values[adapterPosition])
+                    listener?.onDownloadClick(values[adapterPosition], view)
                 }
             }
         }
@@ -81,7 +81,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
     interface OnSearchRecordClickListener {
         fun onItemClick(data: SearchAndInfo)
-        fun onDownloadClick(data: SearchAndInfo)
+        fun onDownloadClick(data: SearchAndInfo, view: View)
     }
 }
 

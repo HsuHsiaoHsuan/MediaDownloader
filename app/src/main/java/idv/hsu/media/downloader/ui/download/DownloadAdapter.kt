@@ -3,15 +3,16 @@ package idv.hsu.media.downloader.ui.download
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IntDef
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.ItemDownloadRecordBinding
 import idv.hsu.media.downloader.db.relation.DownloadAndInfo
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.vo.*
-import timber.log.Timber
 
 class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
     private val values: MutableList<DownloadAndInfo> = mutableListOf()
@@ -38,23 +39,38 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
             DOWNLOAD_STATE_INIT,
             DOWNLOAD_STATE_PARSING-> {
                 holder.progress.isIndeterminate = true
-                holder.progress.isVisible = true
-                holder.textSubtitle.text = ""
+                setProgressVisible(holder, true, "")
+
+                holder.buttonAction.setImageResource(R.drawable.ic_cancel_24)
             }
             DOWNLOAD_STATE_DOWNLOADING -> {
                 holder.progress.setProgressCompat(item.download.downloadProgress.toInt(), true)
-                holder.progress.isVisible = true
-                holder.textSubtitle.text = ""
+                setProgressVisible(holder, true, "")
+
+                holder.buttonAction.setImageResource(R.drawable.ic_cancel_24)
             }
-            DOWNLOAD_STATE_DONE,
+            DOWNLOAD_STATE_DONE, -> {
+                setProgressVisible(holder, false, item.myVideoInfo?.uploader)
+
+                holder.buttonAction.setImageResource(R.drawable.ic_more_24)
+            }
             DOWNLOAD_STATE_FAIL-> {
-                holder.progress.isVisible = false
-                holder.textSubtitle.text = item.myVideoInfo?.uploader ?: ""
+                setProgressVisible(holder, false, item.myVideoInfo?.uploader)
+
+                holder.buttonAction.setImageResource(R.drawable.ic_download_24)
             }
+        }
+        holder.buttonAction.setOnClickListener {
+            listener?.onActionClick(item, item.download.downloadState, it)
         }
     }
 
     override fun getItemCount(): Int = values.size
+
+    private fun setProgressVisible(holder: ViewHolder, value: Boolean, subtitle: String?) {
+        holder.progress.isVisible = value
+        holder.textSubtitle.text = subtitle?: ""
+    }
 
     fun setData(data: List<DownloadAndInfo>) {
         val diffCallback = DownloadDiffCallback(values.toList(), data)
@@ -82,8 +98,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
     }
 
     interface OnDownloadRecordClickListener {
-        fun onItemClick(data: SearchAndInfo)
-        fun onActionClick(data: SearchAndInfo)
+        fun onItemClick(data: DownloadAndInfo)
+        fun onActionClick(data: DownloadAndInfo, @DownloadState value: Int, view: View)
     }
 }
 
