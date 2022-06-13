@@ -13,6 +13,10 @@ class DownloadRecordRepository @Inject constructor(
 ) {
     val allDownloadRecord: Flow<List<DownloadAndInfo>> = downloadRecordDao.getAllDownloadAndInfo()
 
+    val allVideoRecord: Flow<List<DownloadAndInfo>> = downloadRecordDao.getVideoDownloadAndInfo()
+
+    val allAudioRecord: Flow<List<DownloadAndInfo>> = downloadRecordDao.getAudioDownloadAndInfo()
+
     suspend fun addDownloadRecord(data: DownloadRecord) = withContext(Dispatchers.IO) {
         downloadRecordDao.addDownloadRecord(data)
     }

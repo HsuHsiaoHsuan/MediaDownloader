@@ -12,6 +12,14 @@ interface DownloadRecordDao {
     @Query("SELECT * FROM download_record_table ORDER BY download_time DESC")
     fun getAllDownloadAndInfo(): Flow<List<DownloadAndInfo>>
 
+    @Transaction
+    @Query("SELECT * FROM download_record_table WHERE file_extension = 'mp4' ORDER BY download_time DESC")
+    fun getVideoDownloadAndInfo(): Flow<List<DownloadAndInfo>>
+
+    @Transaction
+    @Query("SELECT * FROM download_record_table WHERE file_extension = 'mp3' ORDER BY download_time DESC")
+    fun getAudioDownloadAndInfo(): Flow<List<DownloadAndInfo>>
+
     @Insert(entity = DownloadRecord::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun addDownloadRecord(data: DownloadRecord)
 

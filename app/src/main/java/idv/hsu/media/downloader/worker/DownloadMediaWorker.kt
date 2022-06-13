@@ -226,10 +226,11 @@ class DownloadMediaWorker @AssistedInject constructor(
     }
 }
 
-@IntDef(MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO)
+@IntDef(MEDIA_TYPE_NA, MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO)
 @Retention(AnnotationRetention.SOURCE)
 annotation class MediaType
 
+const val MEDIA_TYPE_NA = -1
 const val MEDIA_TYPE_AUDIO = 0
 const val MEDIA_TYPE_VIDEO = 1
 

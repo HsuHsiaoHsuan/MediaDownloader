@@ -18,7 +18,7 @@ import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentSearchBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.ext.reformatFileName
-import idv.hsu.media.downloader.viewmodel.DownloadMediaViewModel
+import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
@@ -33,7 +33,7 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
 
     private val searchRecordViewModel: SearchRecordViewModel by viewModels()
     private val parseMediaViewModel: ParseMediaViewModel by viewModels()
-    private val downloadMediaViewModel: DownloadMediaViewModel by viewModels()
+    private val getMediaViewModel: GetMediaViewModel by viewModels()
 
     private val adapter = SearchAdapter().apply {
         listener = this@SearchFragment
@@ -118,18 +118,20 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
                 when (item.itemId) {
                     R.id.menu_item_audio -> {
                         if (url != null) {
-                            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
+                            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
                         }
                         true
                     }
                     R.id.menu_item_video -> {
                         if (url != null) {
-                            downloadMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
+                            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
                         }
                         true
                     }
+                    else -> {
+                        false
+                    }
                 }
-                false
             }
         }.show()
     }

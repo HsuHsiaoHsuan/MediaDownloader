@@ -5,6 +5,9 @@ import androidx.annotation.IntDef
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_NA
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.parcelize.Parcelize
 
 @Keep
@@ -26,7 +29,13 @@ data class DownloadRecord(
     @DownloadState
     @ColumnInfo(name = "download_state")
     var downloadState: Int = DOWNLOAD_STATE_INIT
-) : Parcelable
+) : Parcelable {
+    fun getMediaType(): Int = when(fileExtension) {
+        "mp3" -> MEDIA_TYPE_AUDIO
+        "mp4" -> MEDIA_TYPE_VIDEO
+        else -> MEDIA_TYPE_NA
+    }
+}
 
 @IntDef(
     DOWNLOAD_STATE_FAIL,

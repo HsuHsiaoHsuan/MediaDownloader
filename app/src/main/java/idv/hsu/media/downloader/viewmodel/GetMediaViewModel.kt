@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DownloadMediaViewModel @Inject constructor(
+class GetMediaViewModel @Inject constructor(
     private val repoYtdlp: YtDlpRepository
 ) : ViewModel() {
 
@@ -22,6 +22,11 @@ class DownloadMediaViewModel @Inject constructor(
             repoYtdlp.getMedia(url, fileName, type)
         }
     }
+
+    fun cancelDownload(url: String, fileName: String, @MediaType type: Int) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repoYtdlp.cancelGetMedia(url, fileName, type)
+        }
 }
 
 //sealed class DownloadMediaUiState {
