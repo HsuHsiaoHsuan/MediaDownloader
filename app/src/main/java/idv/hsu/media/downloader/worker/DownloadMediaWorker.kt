@@ -110,7 +110,7 @@ class DownloadMediaWorker @AssistedInject constructor(
 
                 repoDownloadRecord.addDownloadRecord(downloadRecord)
 
-                ytdlp.execute(request) { progress, etaInSeconds, line ->
+                ytdlp.execute(request) { progress, etaInSeconds ->
                     updateForegroundDownloadInfo(applicationContext, id, fileName, progress)
                     downloadRecord.downloadProgress = progress
                     downloadRecord.downloadState = if (progress < 0) DOWNLOAD_STATE_PARSING else DOWNLOAD_STATE_DOWNLOADING

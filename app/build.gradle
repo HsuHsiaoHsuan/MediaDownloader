@@ -111,9 +111,9 @@ dependencies {
     implementation 'androidx.work:work-runtime-ktx:2.7.1'
 
     // youtubedl-android - https://github.com/yausername/youtubedl-android
-    implementation 'com.github.yausername.youtubedl-android:common:-SNAPSHOT'
-    implementation 'com.github.yausername.youtubedl-android:ffmpeg:-SNAPSHOT'
-    implementation 'com.github.yausername.youtubedl-android:library:-SNAPSHOT'
+    implementation 'com.github.yausername.youtubedl-android:common:0.13.0'
+    implementation 'com.github.yausername.youtubedl-android:ffmpeg:0.13.0'
+    implementation 'com.github.yausername.youtubedl-android:library:0.13.0'
 
     // Test
     testImplementation 'junit:junit:4.13.2'
