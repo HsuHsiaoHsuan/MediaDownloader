@@ -19,9 +19,13 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.BuildConfig
 import idv.hsu.media.downloader.R
+import idv.hsu.media.downloader.repository.DownloadRecordRepository
 import idv.hsu.media.downloader.utils.createForegroundDownloadInfo
+import idv.hsu.media.downloader.utils.downloadFolder
 import idv.hsu.media.downloader.utils.updateForegroundDownloadInfo
+import idv.hsu.media.downloader.vo.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -32,13 +36,11 @@ import kotlin.random.Random
 class DownloadMediaWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted params: WorkerParameters,
-    private val ytdlp: YoutubeDL
+    private val ytdlp: YoutubeDL,
+    private val repoDownloadRecord: DownloadRecordRepository
 ) : CoroutineWorker(context, params) {
 
-    private val downloadFolder = File(
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-        context.getString(R.string.app_name)
-    )
+    private val downloadFolder = context.downloadFolder()
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
         return super.getForegroundInfo()
@@ -51,30 +53,46 @@ class DownloadMediaWorker @AssistedInject constructor(
         val fileName = inputData.getString(KEY_TITLE) ?: kotlin.run {
             return Result.failure(workDataOf(KEY_RESULT to "no title input"))
         }
+        val mediaType = inputData.getInt(KEY_TYPE, MEDIA_TYPE_AUDIO)
+        val fileExtension = if (mediaType == MEDIA_TYPE_VIDEO) {
+            "mp4"
+        } else {
+            "mp3"
+        }
 
         val request = YoutubeDLRequest(url).apply {
-            addOption("-x")
-            addOption("--audio-format", "mp3")
+            if (mediaType == MEDIA_TYPE_AUDIO) {
+                addOption("-x")
+                addOption("--audio-format", fileExtension)
+                addOption("--embed-thumbnail")
+            } else {
+                addOption("-f", "v+a/b")
+            }
             addOption("--no-mtime")
-//            addOption("--restrict-filenames")
-//            addOption("--trim-filenames", 120)
             addOption("--parse-metadata", "description:$url")
             addOption(
                 "--parse-metadata",
                 "album:${context.getString(idv.hsu.media.downloader.R.string.app_name)}"
             )
             addOption("--add-metadata")
-            addOption("--embed-thumbnail")
             addOption("-P", downloadFolder.absolutePath)
             if (BuildConfig.DEBUG) {
                 addOption("-v")
             }
-            addOption("-o", "$fileName.%(ext)s")
-//            addOption("-o", "%(title)s.%(ext)s")
+            addOption("-o", "$fileName.$fileExtension")
         }
 
 
         return withContext(Dispatchers.IO) {
+            val downloadRecord = DownloadRecord(
+                url = url,
+                fileName = fileName,
+                fileExtension = fileExtension,
+                downloadTime = System.currentTimeMillis(),
+                downloadProgress = 0f,
+                downloadState = DOWNLOAD_STATE_INIT
+            )
+
             try {
                 val id = Random.nextInt(1, 30000)
                 setForeground(
@@ -86,9 +104,23 @@ class DownloadMediaWorker @AssistedInject constructor(
                     )
                 )
 
-                ytdlp.execute(request) { progress, etaInSeconds, line ->
+                repoDownloadRecord.addDownloadRecord(downloadRecord)
+
+                ytdlp.execute(request) { progress, etaInSeconds ->
                     updateForegroundDownloadInfo(applicationContext, id, fileName, progress)
+                    downloadRecord.downloadProgress = progress
+                    downloadRecord.downloadState = if (progress < 0) DOWNLOAD_STATE_PARSING else DOWNLOAD_STATE_DOWNLOADING
+                    launch {
+                        repoDownloadRecord.updateDownloadRecord(downloadRecord)
+                    }
                 }
+
+                downloadRecord.downloadProgress = 100f
+                downloadRecord.downloadState = DOWNLOAD_STATE_DONE
+                launch {
+                    repoDownloadRecord.updateDownloadRecord(downloadRecord)
+                }
+
                 applicationContext.sendBroadcast(
                     Intent(
                         Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
@@ -147,6 +179,8 @@ class DownloadMediaWorker @AssistedInject constructor(
                 Result.success()
             } catch (e: YoutubeDLException) {
                 Timber.e("YoutubeDLException: $e")
+                downloadRecord.downloadState = DOWNLOAD_STATE_FAIL
+                repoDownloadRecord.updateDownloadRecord(downloadRecord)
                 Result.failure(
                     workDataOf(
                         KEY_RESULT to e.toString()
@@ -154,6 +188,8 @@ class DownloadMediaWorker @AssistedInject constructor(
                 )
             } catch (e: InterruptedException) {
                 Timber.e("InterruptedException: $e")
+                downloadRecord.downloadState = DOWNLOAD_STATE_FAIL
+                repoDownloadRecord.updateDownloadRecord(downloadRecord)
                 Result.failure(
                     workDataOf(
                         KEY_RESULT to e.toString()
@@ -161,6 +197,8 @@ class DownloadMediaWorker @AssistedInject constructor(
                 )
             } catch (e: Exception) {
                 Timber.e("Exception: $e")
+                downloadRecord.downloadState = DOWNLOAD_STATE_FAIL
+                repoDownloadRecord.updateDownloadRecord(downloadRecord)
                 Result.failure(
                     workDataOf(
                         KEY_RESULT to e.toString()
@@ -188,10 +226,11 @@ class DownloadMediaWorker @AssistedInject constructor(
     }
 }
 
-@IntDef(MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO)
+@IntDef(MEDIA_TYPE_NA, MEDIA_TYPE_AUDIO, MEDIA_TYPE_VIDEO)
 @Retention(AnnotationRetention.SOURCE)
 annotation class MediaType
 
+const val MEDIA_TYPE_NA = -1
 const val MEDIA_TYPE_AUDIO = 0
 const val MEDIA_TYPE_VIDEO = 1
 

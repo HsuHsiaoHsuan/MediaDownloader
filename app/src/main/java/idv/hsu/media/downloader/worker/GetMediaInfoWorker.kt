@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @HiltWorker
-class GetVideoInfoWorker @AssistedInject constructor(
+class GetMediaInfoWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted params: WorkerParameters,
     private val ytdlp: YoutubeDL,

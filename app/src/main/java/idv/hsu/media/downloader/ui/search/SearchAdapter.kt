@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import idv.hsu.media.downloader.R
-import idv.hsu.media.downloader.databinding.ItemSearchBinding
+import idv.hsu.media.downloader.databinding.ItemSearchRecordBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     private val values: MutableList<SearchAndInfo> = mutableListOf()
-    var listener: OnSearchClickListener? = null
+    var listener: OnSearchRecordClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemSearchBinding.inflate(
+            ItemSearchRecordBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -55,7 +55,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         diffResult.dispatchUpdatesTo(this)
     }
 
-    inner class ViewHolder(binding: ItemSearchBinding) : RecyclerView.ViewHolder(binding.root),
+    inner class ViewHolder(binding: ItemSearchRecordBinding) : RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
         val imageCover = binding.imageCover
         val textTitle = binding.textTitle
@@ -73,15 +73,15 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                     listener?.onItemClick(values[adapterPosition])
                 }
                 buttonAction -> {
-                    listener?.onDownloadClick(values[adapterPosition])
+                    listener?.onDownloadClick(values[adapterPosition], view)
                 }
             }
         }
     }
 
-    interface OnSearchClickListener {
+    interface OnSearchRecordClickListener {
         fun onItemClick(data: SearchAndInfo)
-        fun onDownloadClick(data: SearchAndInfo)
+        fun onDownloadClick(data: SearchAndInfo, view: View)
     }
 }
 

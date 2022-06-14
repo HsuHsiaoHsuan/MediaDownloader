@@ -37,6 +37,10 @@ class SearchRecordViewModel @Inject constructor(
             }
         }
     }
+
+    fun deleteSearch(record: SearchRecord) = viewModelScope.launch(Dispatchers.IO) {
+        repoSearch.delSearchRecord(record)
+    }
 }
 
 sealed class SearchRecordUiState {

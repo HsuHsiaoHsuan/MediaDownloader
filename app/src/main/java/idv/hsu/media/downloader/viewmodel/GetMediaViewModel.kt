@@ -2,18 +2,15 @@ package idv.hsu.media.downloader.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yausername.youtubedl_android.mapper.VideoInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import idv.hsu.media.downloader.repository.YtDlpRepository
 import idv.hsu.media.downloader.worker.MediaType
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DownloadMediaViewModel @Inject constructor(
+class GetMediaViewModel @Inject constructor(
     private val repoYtdlp: YtDlpRepository
 ) : ViewModel() {
 
@@ -22,9 +19,14 @@ class DownloadMediaViewModel @Inject constructor(
 
     fun downloadMedia(url: String, fileName: String, @MediaType type: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            repoYtdlp.getVideo(url, fileName, type)
+            repoYtdlp.getMedia(url, fileName, type)
         }
     }
+
+    fun cancelDownload(url: String, fileName: String, @MediaType type: Int) =
+        viewModelScope.launch(Dispatchers.IO) {
+            repoYtdlp.cancelGetMedia(url, fileName, type)
+        }
 }
 
 //sealed class DownloadMediaUiState {
