@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 //        )
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // TODO ask user really want to leave
+    }
+
     private fun actionRequestPermission(savedInstanceState: Bundle? = null) =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.entries.forEach {

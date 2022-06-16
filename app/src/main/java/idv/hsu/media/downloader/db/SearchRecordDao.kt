@@ -15,7 +15,7 @@ interface SearchRecordDao {
     suspend fun addSearchRecord(data: SearchRecord): Long
 
     @Query("SELECT * FROM search_record_table WHERE url = :url")
-    suspend fun getSearchRecord(url: String): SearchRecord
+    suspend fun getSearchRecord(url: String): SearchRecord?
 
     @Update
     suspend fun updateSearchRecord(record: SearchRecord)

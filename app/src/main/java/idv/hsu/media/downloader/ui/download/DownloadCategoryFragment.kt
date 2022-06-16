@@ -3,11 +3,8 @@ package idv.hsu.media.downloader.ui.download
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupMenu
-import androidx.appcompat.view.menu.MenuBuilder
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -18,8 +15,10 @@ import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentDownloadCategoryBinding
 import idv.hsu.media.downloader.db.relation.DownloadAndInfo
 import idv.hsu.media.downloader.utils.downloadFolder
+import idv.hsu.media.downloader.utils.showPopupMenu
 import idv.hsu.media.downloader.viewmodel.DownloadRecordViewModel
 import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
+import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_DONE
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_INIT
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_PARSING
@@ -35,6 +34,7 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     private val binding get() = _binding!!
 
     private val downloadRecordViewModel: DownloadRecordViewModel by viewModels()
+    private val parseMediaViewModel: ParseMediaViewModel by viewModels()
     private val getMediaViewModel: GetMediaViewModel by viewModels()
 
     private val adapter = DownloadAdapter().apply {
@@ -83,6 +83,10 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
         }
     }
 
+    override fun refreshVideoInfo(url: String) {
+        parseMediaViewModel.getVideoInfo(url)
+    }
+
     override fun onItemClick(data: DownloadAndInfo) {
     }
 
@@ -99,31 +103,24 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
                 downloadRecordViewModel.delete(data.download)
             }
             DOWNLOAD_STATE_DONE -> {
-                PopupMenu(requireActivity(), view).apply {
-                    menuInflater.inflate(R.menu.menu_download_record, this.menu)
-                    if (this.menu is MenuBuilder) {
-                        val menuBuilder = this.menu as MenuBuilder
-                        menuBuilder.setOptionalIconsVisible(true)
-                    }
-                    setOnMenuItemClickListener { item: MenuItem ->
-                        if (item.itemId == R.id.menu_item_delete) {
-                            val fileName =
-                                "${data.download.fileName}.${data.download.fileExtension}"
-                            val file = File(requireActivity().downloadFolder(), fileName)
+                requireActivity().showPopupMenu(view, R.menu.menu_download_record) { item ->
+                    if (item.itemId == R.id.menu_item_delete) {
+                        val fileName =
+                            "${data.download.fileName}.${data.download.fileExtension}"
+                        val file = File(requireActivity().downloadFolder(), fileName)
 
-                            val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-                            val contentResolver = requireActivity().contentResolver
-                            val projection = MediaStore.Audio.Media.DATA + "=?"
-                            val deleteRows =
-                                contentResolver.delete(uri, projection, arrayOf(file.absolutePath))
-                            file.deleteOnExit()
-                            downloadRecordViewModel.delete(data.download)
-                            true
-                        } else {
-                            false
-                        }
+                        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                        val contentResolver = requireActivity().contentResolver
+                        val projection = MediaStore.Audio.Media.DATA + "=?"
+                        val deleteRows =
+                            contentResolver.delete(uri, projection, arrayOf(file.absolutePath))
+                        file.deleteOnExit()
+                        downloadRecordViewModel.delete(data.download)
+                        true
+                    } else {
+                        false
                     }
-                }.show()
+                }
             }
             else -> {
 

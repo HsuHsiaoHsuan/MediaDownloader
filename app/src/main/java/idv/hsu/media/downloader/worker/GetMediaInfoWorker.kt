@@ -11,7 +11,10 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.db.MyVideoInfoDao
 import idv.hsu.media.downloader.db.SearchRecordDao
-import idv.hsu.media.downloader.vo.*
+import idv.hsu.media.downloader.vo.CONVERT_STATE_CONVERTING
+import idv.hsu.media.downloader.vo.CONVERT_STATE_DONE
+import idv.hsu.media.downloader.vo.CONVERT_STATE_FAIL
+import idv.hsu.media.downloader.vo.toMyVideoInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,19 +35,25 @@ class GetMediaInfoWorker @AssistedInject constructor(
                 )
             )
         val searchRecord = repoSearchRecordDao.getSearchRecord(url)
-        searchRecord.convertState = CONVERT_STATE_CONVERTING
-        repoSearchRecordDao.updateSearchRecord(searchRecord)
+        if (searchRecord != null) {
+            searchRecord.convertState = CONVERT_STATE_CONVERTING
+            repoSearchRecordDao.updateSearchRecord(searchRecord)
+        }
 
         return withContext(Dispatchers.IO) {
             try {
                 val videoInfo = ytdlp.getInfo(url)
                 repoMyVideoInfoDao.addMyVideoInfo(videoInfo.toMyVideoInfo(url))
-                searchRecord.convertState = CONVERT_STATE_DONE
-                repoSearchRecordDao.updateSearchRecord(searchRecord)
+                if (searchRecord != null) {
+                    searchRecord.convertState = CONVERT_STATE_DONE
+                    repoSearchRecordDao.updateSearchRecord(searchRecord)
+                }
                 Result.success()
             } catch (e: Exception) {
-                searchRecord.convertState = CONVERT_STATE_FAIL
-                repoSearchRecordDao.updateSearchRecord(searchRecord)
+                if (searchRecord != null) {
+                    searchRecord.convertState = CONVERT_STATE_FAIL
+                    repoSearchRecordDao.updateSearchRecord(searchRecord)
+                }
                 Result.failure(
                     workDataOf(
                         KEY_RESULT to e.toString()
