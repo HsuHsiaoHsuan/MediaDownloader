@@ -33,6 +33,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.browser.BrowserActivity"
+            android:theme="@style/Theme.BrowserActivity"
+            android:exported="true" />
+
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"

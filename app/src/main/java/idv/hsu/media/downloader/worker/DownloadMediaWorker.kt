@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaScannerConnection
 import android.net.Uri
-import android.os.Environment
 import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 import androidx.annotation.IntDef
@@ -18,7 +17,6 @@ import com.yausername.youtubedl_android.YoutubeDLRequest
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.BuildConfig
-import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.repository.DownloadRecordRepository
 import idv.hsu.media.downloader.utils.createForegroundDownloadInfo
 import idv.hsu.media.downloader.utils.downloadFolder

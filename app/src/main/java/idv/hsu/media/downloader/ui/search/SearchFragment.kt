@@ -1,29 +1,23 @@
 package idv.hsu.media.downloader.ui.search
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.appcompat.view.menu.MenuBuilder
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentSearchBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
 import idv.hsu.media.downloader.ext.reformatFileName
+import idv.hsu.media.downloader.utils.openBrowser
+import idv.hsu.media.downloader.utils.showPopupMenu
 import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
@@ -192,38 +186,32 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
 
     override fun onItemClick(data: SearchAndInfo) {
         Timber.e("FREEMAN, onItemClick: $data")
+        requireActivity().openBrowser(data.search.url)
     }
 
     override fun onDownloadClick(data: SearchAndInfo, view: View) {
         val url = data.myVideoInfo?.url
         val title =
             data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
-        PopupMenu(requireActivity(), view).apply {
-            menuInflater.inflate(R.menu.menu_search_record, this.menu)
-            if (this.menu is MenuBuilder) {
-                val menuBuilder = this.menu as MenuBuilder
-                menuBuilder.setOptionalIconsVisible(true)
-            }
-            setOnMenuItemClickListener { item: MenuItem ->
-                when (item.itemId) {
-                    R.id.menu_item_audio -> {
-                        if (url != null) {
-                            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
-                        }
-                        true
+        requireActivity().showPopupMenu(view, R.menu.menu_search_record) { item ->
+            when (item.itemId) {
+                R.id.menu_item_audio -> {
+                    if (url != null) {
+                        getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
                     }
-                    R.id.menu_item_video -> {
-                        if (url != null) {
-                            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
-                        }
-                        true
+                    true
+                }
+                R.id.menu_item_video -> {
+                    if (url != null) {
+                        getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
                     }
-                    else -> {
-                        false
-                    }
+                    true
+                }
+                else -> {
+                    false
                 }
             }
-        }.show()
+        }
     }
 
     private fun search() {

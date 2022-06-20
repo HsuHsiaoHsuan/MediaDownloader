@@ -7,7 +7,6 @@ import androidx.work.WorkManager
 import idv.hsu.media.downloader.worker.DownloadMediaWorker
 import idv.hsu.media.downloader.worker.GetMediaInfoWorker
 import idv.hsu.media.downloader.worker.MediaType
-import timber.log.Timber
 import javax.inject.Inject
 
 class YtDlpRepository @Inject constructor(

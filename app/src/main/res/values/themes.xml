@@ -17,4 +17,8 @@
     <style name="ImageButtonTint">
         <item name="android:tint">@color/black</item>
     </style>
+    <style name="Theme.BrowserActivity" parent="Theme.MediaDownloader">
+        <item name="android:windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>
