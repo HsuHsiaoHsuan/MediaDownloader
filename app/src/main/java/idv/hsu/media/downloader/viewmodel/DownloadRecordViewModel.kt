@@ -3,6 +3,7 @@ package idv.hsu.media.downloader.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import idv.hsu.media.downloader.db.relation.DownloadAndInfo
 import idv.hsu.media.downloader.repository.DownloadRecordRepository
 import idv.hsu.media.downloader.vo.DownloadRecord
 import kotlinx.coroutines.launch
@@ -23,4 +24,11 @@ class DownloadRecordViewModel @Inject constructor(
         repoDownloadRecord.deleteDownloadRecord(record)
     }
 
+}
+
+sealed class DownloadCategoryUiState {
+    object NoData : DownloadCategoryUiState()
+    data class AllData(val list: List<DownloadAndInfo>) : DownloadCategoryUiState()
+    data class AllVideo(val list: List<DownloadAndInfo>) : DownloadCategoryUiState()
+    data class AllAudio(val list: List<DownloadAndInfo>) : DownloadCategoryUiState()
 }

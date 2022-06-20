@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="12dp"
         android:hint="input url of video"
         app:endIconMode="clear_text"
-        app:layout_constraintEnd_toStartOf="@+id/button_search"
+        app:layout_constraintEnd_toStartOf="@+id/compose_button_search"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -27,14 +27,24 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <ImageButton
-        android:id="@+id/button_search"
-        style="@style/ImageButtonTint"
+<!--    <ImageButton-->
+<!--        android:id="@+id/button_search"-->
+<!--        style="@style/ImageButtonTint"-->
+<!--        android:layout_width="40dp"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:layout_marginEnd="12dp"-->
+<!--        android:background="?android:attr/actionBarItemBackground"-->
+<!--        android:src="@drawable/ic_search_24"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/layout_url"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toEndOf="@+id/layout_url"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/layout_url" />-->
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/compose_button_search"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="12dp"
-        android:background="?android:attr/actionBarItemBackground"
-        android:src="@drawable/ic_search_24"
         app:layout_constraintBottom_toBottomOf="@+id/layout_url"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/layout_url"

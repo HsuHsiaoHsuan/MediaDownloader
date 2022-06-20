@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.view.menu.MenuBuilder
 import androidx.appcompat.widget.PopupMenu
+import androidx.compose.material3.MaterialTheme
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -57,7 +58,13 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false).apply {
+            composeButtonSearch.setContent {
+                MaterialTheme {
+                    SearchIcon { search() }
+                }
+            }
+        }
         return binding.root
     }
 
@@ -72,9 +79,9 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
             }
         }
 
-        binding.buttonSearch.setOnClickListener {
-            search()
-        }
+//        binding.buttonSearch.setOnClickListener {
+//            search()
+//        }
 
         with(binding.listSearch) {
             adapter = this@SearchFragment.adapter
