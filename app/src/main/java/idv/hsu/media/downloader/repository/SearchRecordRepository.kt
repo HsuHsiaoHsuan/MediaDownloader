@@ -2,7 +2,10 @@ package idv.hsu.media.downloader.repository
 
 import idv.hsu.media.downloader.db.SearchRecordDao
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
+import idv.hsu.media.downloader.vo.SEARCH_TYPE_TEXT_INPUT
+import idv.hsu.media.downloader.vo.SEARCH_TYPE_WEBVIEW
 import idv.hsu.media.downloader.vo.SearchRecord
+import idv.hsu.media.downloader.vo.SearchType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -11,9 +14,12 @@ import javax.inject.Inject
 class SearchRecordRepository @Inject constructor(
     private val searchDao: SearchRecordDao
 ) {
-    val allSearchRecord: Flow<List<SearchRecord>> = searchDao.getAllSearchRecord()
+    val allSearchByInput: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoByType(
+        SEARCH_TYPE_TEXT_INPUT)
 
-    val allSearchAndInfo: Flow<List<SearchAndInfo>> = searchDao.getAllSearchAndInfo()
+    val allSearchByWebview: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoByType(
+        SEARCH_TYPE_WEBVIEW
+    )
 
     suspend fun addSearchRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
         searchDao.addSearchRecord(record)
@@ -23,7 +29,7 @@ class SearchRecordRepository @Inject constructor(
         searchDao.deleteSearchRecord(record)
     }
 
-    suspend fun clearSearchRecord() = withContext(Dispatchers.IO) {
+    suspend fun clearSearchRecord(@SearchType searchType: Int) = withContext(Dispatchers.IO) {
         searchDao.clear()
     }
 }

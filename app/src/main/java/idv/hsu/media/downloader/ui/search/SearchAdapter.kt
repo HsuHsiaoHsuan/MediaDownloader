@@ -10,6 +10,9 @@ import com.bumptech.glide.Glide
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.ItemSearchRecordBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
+import idv.hsu.media.downloader.vo.CONVERT_STATE_CONVERTING
+import idv.hsu.media.downloader.vo.CONVERT_STATE_DONE
+import idv.hsu.media.downloader.vo.CONVERT_STATE_FAIL
 
 class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
     private val values: MutableList<SearchAndInfo> = mutableListOf()
@@ -31,17 +34,59 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         if (myVideoInfo == null) {
             holder.imageCover.isVisible = false
             holder.textTitle.text = item.search.url
-            holder.textSubtitle.text = holder.itemView.context.resources.getString(R.string.parsing)
-            holder.buttonAction.isVisible = false
+            holder.textSubtitle.text = "click button to refresh"
+            with(holder.buttonAction) {
+                isVisible = true
+                setImageResource(R.drawable.ic_refresh_24)
+                setOnClickListener {
+                    // need show refresh and delete
+                    listener?.onActionRefreshClick(item)
+                }
+            }
         } else {
-            holder.imageCover.isVisible = true
-            Glide.with(holder.itemView.context)
-                .load(myVideoInfo.thumbnail)
-                .centerCrop()
-                .into(holder.imageCover)
-            holder.textTitle.text = myVideoInfo.title
-            holder.textSubtitle.text = myVideoInfo.uploader
-            holder.buttonAction.isVisible = true
+            var title = item.search.url
+            var subtitle = ""
+            when (item.myVideoInfo.convertState) {
+                CONVERT_STATE_FAIL -> {
+                    subtitle =
+                        holder.itemView.context.resources.getString(R.string.parsing_process_failed)
+                    with(holder.buttonAction) {
+                        isVisible = true
+                        setImageResource(R.drawable.ic_delete_24)
+                        setOnClickListener {
+                            listener?.onActionDeleteClick(item)
+                        }
+                    }
+                }
+                CONVERT_STATE_CONVERTING -> {
+                    holder.imageCover.isVisible = false
+                    subtitle = holder.itemView.context.resources.getString(R.string.parsing)
+                    holder.buttonAction.isVisible = false
+                    R.drawable.ic_cancel_24
+                }
+                CONVERT_STATE_DONE -> {
+                    holder.imageCover.isVisible = true
+                    Glide.with(holder.itemView.context)
+                        .load(myVideoInfo.thumbnail)
+                        .centerCrop()
+                        .into(holder.imageCover)
+                    title = item.myVideoInfo.title
+                    subtitle = item.myVideoInfo.uploader
+                    with(holder.buttonAction) {
+                        holder.buttonAction.isVisible = true
+                        setImageResource(R.drawable.ic_download_24)
+                        // FIXME should be more
+                        setOnClickListener {
+                            listener?.onActionDownloadClick(item, this)
+                        }
+                    }
+                }
+                else -> {
+                    holder.buttonAction.isVisible = false
+                }
+            }
+            holder.textTitle.text = title
+            holder.textSubtitle.text = subtitle
         }
     }
 
@@ -55,7 +100,8 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
         diffResult.dispatchUpdatesTo(this)
     }
 
-    inner class ViewHolder(binding: ItemSearchRecordBinding) : RecyclerView.ViewHolder(binding.root),
+    inner class ViewHolder(binding: ItemSearchRecordBinding) :
+        RecyclerView.ViewHolder(binding.root),
         View.OnClickListener {
         val imageCover = binding.imageCover
         val textTitle = binding.textTitle
@@ -64,7 +110,7 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
         init {
             itemView.setOnClickListener(this)
-            buttonAction.setOnClickListener(this)
+//            buttonAction.setOnClickListener(this)
         }
 
         override fun onClick(view: View?) {
@@ -72,16 +118,19 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                 itemView -> {
                     listener?.onItemClick(values[adapterPosition])
                 }
-                buttonAction -> {
-                    listener?.onDownloadClick(values[adapterPosition], view)
-                }
+//                buttonAction -> {
+//                    listener?.onSearchDownloadClick(values[adapterPosition], view)
+//                }
             }
         }
     }
 
     interface OnSearchRecordClickListener {
         fun onItemClick(data: SearchAndInfo)
-        fun onDownloadClick(data: SearchAndInfo, view: View)
+        fun onActionDownloadClick(data: SearchAndInfo, view: View)
+        fun onActionDeleteClick(data: SearchAndInfo)
+        fun onActionRefreshClick(data: SearchAndInfo)
+        fun onActionMoreClick(data: SearchAndInfo, view: View)
     }
 }
 

@@ -2,19 +2,23 @@
 <resources>
     <string name="app_name">MediaDownloader</string>
 
+    <string name="audio">Audio</string>
+
+    <string name="delete">Delete</string>
+
     <string name="download">download</string>
 
     <string name="downloading">downloading</string>
 
     <string name="parsing">parsing…</string>
+    <string name="parsing_process_failed">parsing process failed.</string>
 
     <string name="title_download">Download</string>
+    <string name="title_home">Home</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_search">Search</string>
 
-    <string name="percentage" translatable="false">"%s %%"</string>
-
     <string name="video">Video</string>
-    <string name="audio">Audio</string>
-    <string name="delete">Delete</string>
+
+    <string name="percentage" translatable="false">"%s %%"</string>
 </resources>

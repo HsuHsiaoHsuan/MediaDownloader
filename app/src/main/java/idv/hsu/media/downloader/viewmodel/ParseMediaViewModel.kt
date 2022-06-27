@@ -36,6 +36,7 @@ class ParseMediaViewModel @Inject constructor(
             }
         }
     }
+
 }
 
 sealed class ParseMediaUiState {

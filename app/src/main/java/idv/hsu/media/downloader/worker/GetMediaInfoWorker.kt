@@ -11,10 +11,9 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.db.MyVideoInfoDao
 import idv.hsu.media.downloader.db.SearchRecordDao
-import idv.hsu.media.downloader.vo.CONVERT_STATE_CONVERTING
-import idv.hsu.media.downloader.vo.CONVERT_STATE_DONE
-import idv.hsu.media.downloader.vo.CONVERT_STATE_FAIL
-import idv.hsu.media.downloader.vo.toMyVideoInfo
+import idv.hsu.media.downloader.vo.*
+import idv.hsu.media.downloader.worker.DownloadMediaWorker.Companion.KEY_RESULT
+import idv.hsu.media.downloader.worker.DownloadMediaWorker.Companion.KEY_URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -34,26 +33,33 @@ class GetMediaInfoWorker @AssistedInject constructor(
                     KEY_RESULT to "url is null"
                 )
             )
-        val searchRecord = repoSearchRecordDao.getSearchRecord(url)
-        if (searchRecord != null) {
-            searchRecord.convertState = CONVERT_STATE_CONVERTING
-            repoSearchRecordDao.updateSearchRecord(searchRecord)
-        }
+
+        val videoInfo = repoMyVideoInfoDao.getMyVideoInfo(url) ?: MyVideoInfo(url = url, convertState = CONVERT_STATE_CONVERTING)
+        repoMyVideoInfoDao.addMyVideoInfo(videoInfo)
+        // --------------
+//        val searchRecord = repoSearchRecordDao.getSearchRecord(url)
+//        if (searchRecord != null) {
+//            searchRecord.convertState = CONVERT_STATE_CONVERTING
+//            repoSearchRecordDao.updateSearchRecord(searchRecord)
+//        }
 
         return withContext(Dispatchers.IO) {
             try {
                 val videoInfo = ytdlp.getInfo(url)
                 repoMyVideoInfoDao.addMyVideoInfo(videoInfo.toMyVideoInfo(url))
-                if (searchRecord != null) {
-                    searchRecord.convertState = CONVERT_STATE_DONE
-                    repoSearchRecordDao.updateSearchRecord(searchRecord)
-                }
+//                if (searchRecord != null) {
+//                    searchRecord.convertState = CONVERT_STATE_DONE
+//                    repoSearchRecordDao.updateSearchRecord(searchRecord)
+//                }
                 Result.success()
             } catch (e: Exception) {
-                if (searchRecord != null) {
-                    searchRecord.convertState = CONVERT_STATE_FAIL
-                    repoSearchRecordDao.updateSearchRecord(searchRecord)
-                }
+                val videoInfo = MyVideoInfo(url = url, convertState = CONVERT_STATE_FAIL)
+                repoMyVideoInfoDao.addMyVideoInfo(videoInfo)
+                //------
+//                if (searchRecord != null) {
+//                    searchRecord.convertState = CONVERT_STATE_FAIL
+//                    repoSearchRecordDao.updateSearchRecord(searchRecord)
+//                }
                 Result.failure(
                     workDataOf(
                         KEY_RESULT to e.toString()

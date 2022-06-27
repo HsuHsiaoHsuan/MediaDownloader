@@ -16,21 +16,18 @@ data class SearchRecord(
     val url: String,
     @ColumnInfo(name = "search_time")
     val searchTime: Long,
-    @ConvertState
-    @ColumnInfo(name = "convert_state")
-    var convertState: Int = CONVERT_STATE_INIT
+    @ColumnInfo(name = "search_type")
+    val searchType: Int,
 ) : Parcelable
 
 @IntDef(
-    CONVERT_STATE_FAIL,
-    CONVERT_STATE_INIT,
-    CONVERT_STATE_CONVERTING,
-    CONVERT_STATE_DONE
+    SEARCH_TYPE_TEXT_INPUT,
+    SEARCH_TYPE_WEBVIEW,
+    SEARCH_TYPE_CLIPBOARD
 )
 @Retention(AnnotationRetention.SOURCE)
-annotation class ConvertState
+annotation class SearchType
 
-const val CONVERT_STATE_FAIL = -1
-const val CONVERT_STATE_INIT = 0
-const val CONVERT_STATE_CONVERTING = 1
-const val CONVERT_STATE_DONE = 2
+const val SEARCH_TYPE_TEXT_INPUT = 0
+const val SEARCH_TYPE_WEBVIEW = 1
+const val SEARCH_TYPE_CLIPBOARD = 2
