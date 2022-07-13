@@ -25,22 +25,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/edit_web_url"
+        <include
+            android:id="@+id/include_url"
+            layout="@layout/edit_web_url"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginVertical="8dp"
-            android:layout_marginEnd="12dp"
-            android:background="@drawable/bg_edit_url"
-            android:inputType="textUri"
-            android:lines="1"
-            android:paddingHorizontal="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/button_action"
+            android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/button_action"
             app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe"
@@ -65,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         android:clickable="true"
-        android:src="@drawable/ic_download_24"
+        android:src="@drawable/ic_downloadlist_add_24"
         app:fabSize="auto"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -20,6 +20,9 @@ import idv.hsu.media.downloader.utils.openBrowser
 import idv.hsu.media.downloader.utils.showPopupMenu
 import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
+import idv.hsu.media.downloader.viewmodel.SearchRecordUiState
+import idv.hsu.media.downloader.viewmodel.SearchRecordViewModel
+import idv.hsu.media.downloader.vo.SEARCH_TYPE_TEXT_INPUT
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.coroutines.launch
@@ -57,6 +60,7 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.inputUrl.setOnEditorActionListener { textView, actionId, keyEvent ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 search()
@@ -176,8 +180,7 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                searchRecordViewModel.allSearchAndInfo.collect {
-//                    Timber.e("FREEMAN, all searchNinfo: $it")
+                searchRecordViewModel.allSearchByInput.collect {
                     adapter.setData(it)
                 }
             }
@@ -189,7 +192,7 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
         requireActivity().openBrowser(data.search.url)
     }
 
-    override fun onDownloadClick(data: SearchAndInfo, view: View) {
+    override fun onActionDownloadClick(data: SearchAndInfo, view: View) {
         val url = data.myVideoInfo?.url
         val title =
             data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
@@ -214,11 +217,24 @@ class SearchFragment : Fragment(), SearchAdapter.OnSearchRecordClickListener {
         }
     }
 
+    override fun onActionDeleteClick(data: SearchAndInfo) {
+        searchRecordViewModel.deleteSearch(data.search)
+
+    }
+
+    override fun onActionRefreshClick(data: SearchAndInfo) {
+        parseMediaViewModel.getVideoInfo(data.search.url)
+    }
+
+    override fun onActionMoreClick(data: SearchAndInfo, view: View) {
+        //
+    }
+
     private fun search() {
         binding.inputUrl.text?.let {
             val url = it.trim().toString()
             if (url.isNotBlank()) {
-                searchRecordViewModel.addSearch(url)
+                searchRecordViewModel.addSearch(url, SEARCH_TYPE_TEXT_INPUT)
             }
         }
     }

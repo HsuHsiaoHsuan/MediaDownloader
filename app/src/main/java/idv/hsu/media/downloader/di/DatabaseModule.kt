@@ -7,10 +7,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import idv.hsu.media.downloader.db.DownloadRecordDao
-import idv.hsu.media.downloader.db.MediaDatabase
-import idv.hsu.media.downloader.db.MyVideoInfoDao
-import idv.hsu.media.downloader.db.SearchRecordDao
+import idv.hsu.media.downloader.db.*
 import javax.inject.Singleton
 
 @Module

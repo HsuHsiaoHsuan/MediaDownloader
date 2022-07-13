@@ -7,7 +7,11 @@ import idv.hsu.media.downloader.vo.MyVideoInfo
 import idv.hsu.media.downloader.vo.SearchRecord
 
 @Database(
-    entities = [SearchRecord::class, MyVideoInfo::class, DownloadRecord::class],
+    entities = [
+        SearchRecord::class,
+        MyVideoInfo::class,
+        DownloadRecord::class
+    ],
     version = 1,
     exportSchema = true
 )

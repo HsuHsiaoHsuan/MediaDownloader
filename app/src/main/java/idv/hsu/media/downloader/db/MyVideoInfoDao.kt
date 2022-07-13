@@ -1,9 +1,6 @@
 package idv.hsu.media.downloader.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import idv.hsu.media.downloader.vo.MyVideoInfo
 import kotlinx.coroutines.flow.Flow
 
@@ -13,8 +10,11 @@ interface MyVideoInfoDao {
     fun getAllVideoInfo(): Flow<List<MyVideoInfo>>
 
     @Query("SELECT * FROM video_info_table WHERE url = :url")
-    suspend fun getMyVideoInfo(url: String): MyVideoInfo
+    suspend fun getMyVideoInfo(url: String): MyVideoInfo?
 
     @Insert(entity = MyVideoInfo::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMyVideoInfo(data: MyVideoInfo)
+
+    @Update
+    suspend fun updateMyVideoInfo(data: MyVideoInfo)
 }

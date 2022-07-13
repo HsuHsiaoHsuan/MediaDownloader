@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a7baf95773dac2c2cfc1754ec78f7bf8",
+    "identityHash": "60b15ee4fd3fbfdc0e46fd20ae8ff51a",
     "entities": [
       {
         "tableName": "search_record_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `search_time` INTEGER NOT NULL, `convert_state` INTEGER NOT NULL, PRIMARY KEY(`url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `search_time` INTEGER NOT NULL, `search_type` INTEGER NOT NULL, PRIMARY KEY(`url`))",
         "fields": [
           {
             "fieldPath": "url",
@@ -21,8 +21,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "convertState",
-            "columnName": "convert_state",
+            "fieldPath": "searchType",
+            "columnName": "search_type",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "video_info_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, PRIMARY KEY(`url`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`url` TEXT NOT NULL, `thumbnail` TEXT NOT NULL, `title` TEXT NOT NULL, `uploader` TEXT NOT NULL, `duration` INTEGER NOT NULL, `convert_state` INTEGER NOT NULL, PRIMARY KEY(`url`))",
         "fields": [
           {
             "fieldPath": "url",
@@ -67,6 +67,12 @@
           {
             "fieldPath": "duration",
             "columnName": "duration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "convertState",
+            "columnName": "convert_state",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -136,7 +142,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a7baf95773dac2c2cfc1754ec78f7bf8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '60b15ee4fd3fbfdc0e46fd20ae8ff51a')"
     ]
   }
 }
