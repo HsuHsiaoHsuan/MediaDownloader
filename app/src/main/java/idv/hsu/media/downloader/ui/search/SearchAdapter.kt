@@ -74,10 +74,10 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                     subtitle = item.myVideoInfo.uploader
                     with(holder.buttonAction) {
                         holder.buttonAction.isVisible = true
-                        setImageResource(R.drawable.ic_download_24)
+                        setImageResource(R.drawable.ic_more_24)
                         // FIXME should be more
                         setOnClickListener {
-                            listener?.onActionDownloadClick(item, this)
+                            listener?.onActionMoreClick(item, this)
                         }
                     }
                 }
@@ -110,7 +110,6 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
 
         init {
             itemView.setOnClickListener(this)
-//            buttonAction.setOnClickListener(this)
         }
 
         override fun onClick(view: View?) {
@@ -118,9 +117,6 @@ class SearchAdapter : RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
                 itemView -> {
                     listener?.onItemClick(values[adapterPosition])
                 }
-//                buttonAction -> {
-//                    listener?.onSearchDownloadClick(values[adapterPosition], view)
-//                }
             }
         }
     }

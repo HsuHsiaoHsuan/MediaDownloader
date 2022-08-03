@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="app_name">MediaDownloader</string>
-
-    <string name="audio">Audio</string>
 
     <string name="delete">Delete</string>
 
     <string name="download">download</string>
+    <string name="download_audio">Download audio</string>
+    <string name="download_video">Download video</string>
 
     <string name="downloading">downloading</string>
 
@@ -17,8 +16,6 @@
     <string name="title_home">Home</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_search">Search</string>
-
-    <string name="video">Video</string>
 
     <string name="percentage" translatable="false">"%s %%"</string>
 </resources>

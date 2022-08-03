@@ -7,9 +7,11 @@ import androidx.room.Relation
 import idv.hsu.media.downloader.vo.MyVideoInfo
 import idv.hsu.media.downloader.vo.SearchRecord
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Keep
 @Parcelize
+@Serializable
 data class SearchAndInfo(
     @Embedded val search: SearchRecord,
     @Relation(

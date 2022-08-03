@@ -7,9 +7,11 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Keep
 @Parcelize
+@Serializable
 @Entity(tableName = "search_record_table")
 data class SearchRecord(
     @PrimaryKey(autoGenerate = false)

@@ -5,6 +5,10 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/navigation_home">
 
+    <action
+        android:id="@+id/action_global_open_sheet_more_action"
+        app:destination="@+id/nav_sheet_more_action_on_search_record" />
+
     <fragment
         android:id="@+id/navigation_home"
         android:name="idv.hsu.media.downloader.ui.home.HomeFragment"
@@ -28,4 +32,14 @@
         android:name="idv.hsu.media.downloader.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
+    <dialog
+        android:id="@+id/nav_sheet_more_action_on_search_record"
+        android:name="idv.hsu.media.downloader.ui.sheet.MoreActionOnSearchRecordSheet"
+        android:label="More Action"
+        tools:layout="@layout/sheet_more_action_on_search_record">
+        <argument
+            android:name="argSearchAndInfo"
+            app:argType="idv.hsu.media.downloader.db.relation.SearchAndInfo" />
+    </dialog>
 </navigation>

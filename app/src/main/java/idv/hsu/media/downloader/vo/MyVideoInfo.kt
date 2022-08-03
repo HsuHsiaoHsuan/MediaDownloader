@@ -8,9 +8,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.yausername.youtubedl_android.mapper.VideoInfo
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Keep
 @Parcelize
+@Serializable
 @Entity(tableName = "video_info_table")
 data class MyVideoInfo(
     @PrimaryKey(autoGenerate = false)

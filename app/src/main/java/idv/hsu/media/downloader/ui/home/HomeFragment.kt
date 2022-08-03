@@ -10,8 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import com.github.rubensousa.gravitysnaphelper.GravitySnapHelper
 import dagger.hilt.android.AndroidEntryPoint
+import idv.hsu.media.downloader.MobileNavigationDirections
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentHomeBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
@@ -26,6 +28,7 @@ import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), RecommendAdapter.OnRecommendClickListener,
@@ -91,41 +94,27 @@ class HomeFragment : Fragment(), RecommendAdapter.OnRecommendClickListener,
     }
 
     override fun onItemClick(data: SearchAndInfo) {
+        Timber.d("onItemClick, data: $data")
         requireActivity().openBrowser(data.search.url)
     }
 
     override fun onActionDownloadClick(data: SearchAndInfo, view: View) {
-        val url = data.myVideoInfo?.url
-        val title =
-            data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
-        requireActivity().showPopupMenu(view, R.menu.menu_search_record) { item ->
-            when (item.itemId) {
-                R.id.menu_item_audio -> {
-                    if (url != null) {
-                        getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
-                    }
-                    true
-                }
-                R.id.menu_item_video -> {
-                    if (url != null) {
-                        getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
-                    }
-                    true
-                }
-                else -> {
-                    false
-                }
-            }
-        }
+        Timber.d("onActionDownloadClick, data: $data")
     }
 
     override fun onActionDeleteClick(data: SearchAndInfo) {
+        Timber.d("onActionDeleteClick, data: $data")
         searchRecordViewMode.deleteSearch(data.search)
     }
 
     override fun onActionRefreshClick(data: SearchAndInfo) {
+        Timber.d("onActionRefreshClick, data: $data")
     }
 
     override fun onActionMoreClick(data: SearchAndInfo, view: View) {
+        Timber.d("onActionMoreClick, data: $data")
+        findNavController().navigate(
+            MobileNavigationDirections.actionGlobalOpenSheetMoreAction(data)
+        )
     }
 }
