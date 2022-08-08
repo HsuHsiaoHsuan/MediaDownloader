@@ -17,15 +17,11 @@ import idv.hsu.media.downloader.MobileNavigationDirections
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentHomeBinding
 import idv.hsu.media.downloader.db.relation.SearchAndInfo
-import idv.hsu.media.downloader.ext.reformatFileName
 import idv.hsu.media.downloader.ui.search.RecommendAdapter
 import idv.hsu.media.downloader.ui.search.SearchAdapter
 import idv.hsu.media.downloader.utils.openBrowser
-import idv.hsu.media.downloader.utils.showPopupMenu
 import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
 import idv.hsu.media.downloader.viewmodel.SearchRecordViewModel
-import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
-import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -39,11 +35,7 @@ class HomeFragment : Fragment(), RecommendAdapter.OnRecommendClickListener,
         Triple("YouTube", "https://m.youtube.com/", R.mipmap.ic_launcher_round),
         Triple("Facebook Watch", "https://m.facebook.com/watch/", R.mipmap.ic_launcher_round),
         Triple("Vimeo Watch", "https://vimeo.com/watch/", R.mipmap.ic_launcher_round),
-        Triple(
-            "SoundCloud Discover",
-            "https://m.soundcloud.com/discover/",
-            R.mipmap.ic_launcher_round
-        ),
+        Triple("SoundCloud Discover", "https://m.soundcloud.com/discover/", R.mipmap.ic_launcher_round),
         Triple("DailyMotion", "https://www.dailymotion.com/", R.mipmap.ic_launcher_round),
         Triple("Pornhub", "https://www.pornhub.com/", R.mipmap.ic_launcher_round)
     )
