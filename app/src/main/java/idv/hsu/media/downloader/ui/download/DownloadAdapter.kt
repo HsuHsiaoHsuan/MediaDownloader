@@ -58,7 +58,7 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
             DOWNLOAD_STATE_FAIL -> {
                 setProgressVisible(holder, false, item.myVideoInfo?.uploader)
 
-                holder.buttonAction.setImageResource(R.drawable.ic_download_24)
+                holder.buttonAction.setImageResource(R.drawable.ic_refresh_24)
             }
         }
         holder.buttonAction.setOnClickListener {

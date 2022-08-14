@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.yausername.youtubedl_android.YoutubeDL
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentDownloadCategoryBinding
@@ -19,10 +20,9 @@ import idv.hsu.media.downloader.utils.showPopupMenu
 import idv.hsu.media.downloader.viewmodel.DownloadRecordViewModel
 import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
 import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
-import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_DONE
-import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_INIT
-import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_PARSING
-import idv.hsu.media.downloader.vo.DownloadState
+import idv.hsu.media.downloader.vo.*
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
+import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -93,6 +93,18 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     override fun onActionClick(data: DownloadAndInfo, @DownloadState value: Int, view: View) {
         Timber.e("FREEMAN, state: $value data: ${data.myVideoInfo}")
         when (value) {
+            DOWNLOAD_STATE_FAIL -> {
+                //url, title, MEDIA_TYPE_AUDIO
+                getMediaViewModel.downloadMedia(
+                    data.download.url,
+                    data.download.fileName,
+                    if (data.download.fileExtension.equals(
+                            "mp3",
+                            true
+                        )
+                    ) MEDIA_TYPE_AUDIO else MEDIA_TYPE_VIDEO
+                )
+            }
             DOWNLOAD_STATE_INIT,
             DOWNLOAD_STATE_PARSING -> {
                 getMediaViewModel.cancelDownload(
@@ -101,6 +113,10 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
                     data.download.getMediaType()
                 )
                 downloadRecordViewModel.delete(data.download)
+            }
+            DOWNLOAD_STATE_DOWNLOADING -> {
+                val id = "${data.download.url}_${data.download.fileExtension}"
+                YoutubeDL.getInstance().destroyProcessById(id)
             }
             DOWNLOAD_STATE_DONE -> {
                 requireActivity().showPopupMenu(view, R.menu.menu_download_record) { item ->
