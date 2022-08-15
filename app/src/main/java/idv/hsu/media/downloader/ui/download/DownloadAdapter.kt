@@ -94,7 +94,8 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
             buttonAction.setOnClickListener(this)
         }
 
-        override fun onClick(p0: View?) {
+        override fun onClick(view: View?) {
+            listener?.onItemClick(values[adapterPosition])
         }
     }
 

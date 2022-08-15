@@ -1,10 +1,14 @@
 package idv.hsu.media.downloader.ui.download
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -88,6 +92,32 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     }
 
     override fun onItemClick(data: DownloadAndInfo) {
+        Timber.e("FREEMAN, onItemClick: $data")
+        val file = File(requireActivity().downloadFolder(), "${data.download.fileName}.${data.download.fileExtension}")
+        Timber.e("FREEMAN, exist?: ${file.exists()}")
+        if (file.exists()) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(file.absolutePath))
+            val mimeType = when (data.download.getMediaType()) {
+                MEDIA_TYPE_AUDIO -> {
+                    "audio/mpeg"
+                }
+                MEDIA_TYPE_VIDEO -> {
+                    "video/mp4"
+                }
+                else -> {
+                    ""
+                }
+            }
+            intent.setDataAndType(Uri.parse(file.absolutePath), mimeType)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            if (intent.resolveActivity(requireActivity().packageManager) != null) {
+                requireActivity().startActivity(intent)
+            } else {
+                Toast.makeText(requireActivity(), "No App can play this file", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Timber.e("FREEMAN, file not exist")
+        }
     }
 
     override fun onActionClick(data: DownloadAndInfo, @DownloadState value: Int, view: View) {
