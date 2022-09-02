@@ -178,7 +178,7 @@ class DownloadMediaWorker @AssistedInject constructor(
                 Result.success()
             } catch (e: YoutubeDLException) {
                 Timber.e("YoutubeDLException: $e")
-                downloadRecord.downloadState = DOWNLOAD_STATE_FAIL
+                downloadRecord.downloadState = DOWNLOAD_STATE_PAUSED
                 repoDownloadRecord.updateDownloadRecord(downloadRecord)
                 Result.failure(
                     workDataOf(

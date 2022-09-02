@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import idv.hsu.media.downloader.DataStorePreferencesManager
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -22,4 +23,10 @@ object AppModule {
     @Singleton
     fun provideWorkerManager(@ApplicationContext context: Context): WorkManager =
         WorkManager.getInstance(context)
+
+    @Provides
+    @Singleton
+    fun provideDataStoreManager(
+        @ApplicationContext appContext: Context
+    ): DataStorePreferencesManager = DataStorePreferencesManager(appContext)
 }

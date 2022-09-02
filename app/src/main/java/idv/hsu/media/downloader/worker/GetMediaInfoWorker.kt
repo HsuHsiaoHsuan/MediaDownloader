@@ -12,8 +12,6 @@ import dagger.assisted.AssistedInject
 import idv.hsu.media.downloader.db.MyVideoInfoDao
 import idv.hsu.media.downloader.db.SearchRecordDao
 import idv.hsu.media.downloader.vo.*
-import idv.hsu.media.downloader.worker.DownloadMediaWorker.Companion.KEY_RESULT
-import idv.hsu.media.downloader.worker.DownloadMediaWorker.Companion.KEY_URL
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 

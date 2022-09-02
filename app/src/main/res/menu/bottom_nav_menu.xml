@@ -7,11 +7,6 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_search"
-        android:icon="@drawable/ic_search_24"
-        android:title="@string/title_search" />
-
-    <item
         android:id="@+id/navigation_download"
         android:icon="@drawable/ic_download_24"
         android:title="@string/title_download" />
@@ -19,6 +14,6 @@
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_settings_24"
-        android:title="@string/title_notifications" />
+        android:title="@string/title_settings" />
 
 </menu>

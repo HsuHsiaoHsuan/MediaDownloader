@@ -17,4 +17,7 @@ interface MyVideoInfoDao {
 
     @Update
     suspend fun updateMyVideoInfo(data: MyVideoInfo)
+
+    @Delete
+    suspend fun delMyVideoInfo(data: MyVideoInfo)
 }

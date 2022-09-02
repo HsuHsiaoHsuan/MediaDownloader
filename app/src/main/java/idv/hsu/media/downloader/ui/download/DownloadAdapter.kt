@@ -60,6 +60,11 @@ class DownloadAdapter : RecyclerView.Adapter<DownloadAdapter.ViewHolder>() {
 
                 holder.buttonAction.setImageResource(R.drawable.ic_refresh_24)
             }
+            DOWNLOAD_STATE_PAUSED -> {
+                setProgressVisible(holder, true, "")
+
+                holder.buttonAction.setImageResource(R.drawable.ic_refresh_24)
+            }
         }
         holder.buttonAction.setOnClickListener {
             listener?.onActionClick(item, item.download.downloadState, it)
