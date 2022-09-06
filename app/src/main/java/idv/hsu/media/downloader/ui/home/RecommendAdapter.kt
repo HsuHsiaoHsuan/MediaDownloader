@@ -1,4 +1,4 @@
-package idv.hsu.media.downloader.ui.search
+package idv.hsu.media.downloader.ui.home
 
 import android.view.LayoutInflater
 import android.view.View

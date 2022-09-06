@@ -13,7 +13,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.databinding.FragmentDownloadBinding
 import idv.hsu.media.downloader.db.relation.DownloadAndInfo
-import idv.hsu.media.downloader.viewmodel.DownloadRecordViewModel
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_DOWNLOADING
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_INIT
 import idv.hsu.media.downloader.vo.DOWNLOAD_STATE_PARSING
@@ -26,7 +25,7 @@ class DownloadFragment : Fragment() {
     private var _binding: FragmentDownloadBinding? = null
     private val binding get() = _binding!!
 
-    private val downloadRecordViewModel: DownloadRecordViewModel by viewModels()
+    private val viewModel: DownloadViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,14 +61,14 @@ class DownloadFragment : Fragment() {
     private fun subscribeToObservers() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                downloadRecordViewModel.allAudioRecord.collectLatest {
+                viewModel.downloadAudio.collectLatest {
                     showBadge(0, it)
                 }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                downloadRecordViewModel.allVideoRecord.collectLatest {
+                viewModel.downloadVideo.collectLatest {
                     showBadge(1, it)
                 }
             }

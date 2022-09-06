@@ -12,19 +12,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.databinding.ActivityBrowserBinding
 import idv.hsu.media.downloader.utils.EXTRA_URL
 import idv.hsu.media.downloader.utils.initWebView
-import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
-import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
-import idv.hsu.media.downloader.viewmodel.SearchRecordViewModel
-import idv.hsu.media.downloader.vo.SEARCH_TYPE_WEBVIEW
 
 @AndroidEntryPoint
 class BrowserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityBrowserBinding
 
-    private val getMediaViewModel: GetMediaViewModel by viewModels()
-    private val parseMediaViewModel: ParseMediaViewModel by viewModels()
-    private val searchRecordViewModel: SearchRecordViewModel by viewModels()
+    private val viewModel: BrowserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +53,7 @@ class BrowserActivity : AppCompatActivity() {
         )
 
         with(binding.swipe) {
-            var typedValue = TypedValue()
+            val typedValue = TypedValue()
             theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, typedValue, true)
             val color = typedValue.data
             setColorSchemeColors(color)
@@ -76,8 +70,7 @@ class BrowserActivity : AppCompatActivity() {
         binding.fabDownload.setOnClickListener { view ->
             val url = binding.webview.url
             if (url != null) {
-                searchRecordViewModel.addSearch(url, SEARCH_TYPE_WEBVIEW)
-                parseMediaViewModel.getVideoInfo(url)
+                viewModel.getMediaInfo(url)
             }
         }
 

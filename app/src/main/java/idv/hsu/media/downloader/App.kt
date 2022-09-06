@@ -30,6 +30,10 @@ class App : Application(), Configuration.Provider {
             Timber.plant(ReleaseTree())
         }
 
+//        changeDarkMode(this)
+        //FIXME
+        //https://stackoverflow.com/questions/72395200/using-preference-datastore-in-application-class-android
+
         try {
             YoutubeDL.getInstance().init(this)
             FFmpeg.getInstance().init(this)

@@ -1,7 +1,6 @@
 package idv.hsu.media.downloader.ui.download
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -14,19 +13,16 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.yausername.youtubedl_android.YoutubeDL
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.R
 import idv.hsu.media.downloader.databinding.FragmentDownloadCategoryBinding
 import idv.hsu.media.downloader.db.relation.DownloadAndInfo
 import idv.hsu.media.downloader.utils.downloadFolder
 import idv.hsu.media.downloader.utils.showPopupMenu
-import idv.hsu.media.downloader.viewmodel.DownloadRecordViewModel
-import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
-import idv.hsu.media.downloader.viewmodel.ParseMediaViewModel
 import idv.hsu.media.downloader.vo.*
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.io.File
@@ -37,9 +33,7 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     private var _binding: FragmentDownloadCategoryBinding? = null
     private val binding get() = _binding!!
 
-    private val downloadRecordViewModel: DownloadRecordViewModel by viewModels()
-    private val parseMediaViewModel: ParseMediaViewModel by viewModels()
-    private val getMediaViewModel: GetMediaViewModel by viewModels()
+    private val viewModel: DownloadCategoryViewModel by viewModels()
 
     private val adapter = DownloadAdapter().apply {
         listener = this@DownloadCategoryFragment
@@ -68,17 +62,17 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 when (arguments?.getInt(KEY_MODE, 2)) {
                     0 -> {
-                        downloadRecordViewModel.allAudioRecord.collect {
+                        viewModel.downloadAudio.collectLatest {
                             adapter.setData(it)
                         }
                     }
                     1 -> {
-                        downloadRecordViewModel.allVideoRecord.collect {
+                        viewModel.downloadVideo.collectLatest {
                             adapter.setData(it)
                         }
                     }
                     else -> {
-                        downloadRecordViewModel.allDownloadRecord.collect {
+                        viewModel.downloadAll.collectLatest {
                             adapter.setData(it)
                         }
                     }
@@ -88,12 +82,15 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     }
 
     override fun refreshVideoInfo(url: String) {
-        parseMediaViewModel.getVideoInfo(url)
+        viewModel.getMediaInfo(url)
     }
 
     override fun onItemClick(data: DownloadAndInfo) {
         Timber.e("FREEMAN, onItemClick: $data")
-        val file = File(requireActivity().downloadFolder(), "${data.download.fileName}.${data.download.fileExtension}")
+        val file = File(
+            requireActivity().downloadFolder(),
+            "${data.download.fileName}.${data.download.fileExtension}"
+        )
         Timber.e("FREEMAN, exist?: ${file.exists()}")
         if (file.exists()) {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(file.absolutePath))
@@ -113,7 +110,8 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
             if (intent.resolveActivity(requireActivity().packageManager) != null) {
                 requireActivity().startActivity(intent)
             } else {
-                Toast.makeText(requireActivity(), "No App can play this file", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireActivity(), "No App can play this file", Toast.LENGTH_SHORT)
+                    .show()
             }
         } else {
             Timber.e("FREEMAN, file not exist")
@@ -121,11 +119,11 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
     }
 
     override fun onActionClick(data: DownloadAndInfo, @DownloadState value: Int, view: View) {
-        Timber.e("FREEMAN, state: $value data: ${data.myVideoInfo}")
+        Timber.e("DownloadState: $value data: ${data.myVideoInfo}")
         when (value) {
-            DOWNLOAD_STATE_FAIL -> {
-                //url, title, MEDIA_TYPE_AUDIO
-                getMediaViewModel.downloadMedia(
+            DOWNLOAD_STATE_FAIL,
+            DOWNLOAD_STATE_PAUSED -> {
+                viewModel.downloadMedia(
                     data.download.url,
                     data.download.fileName,
                     if (data.download.fileExtension.equals(
@@ -136,17 +134,14 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
                 )
             }
             DOWNLOAD_STATE_INIT,
-            DOWNLOAD_STATE_PARSING -> {
-                getMediaViewModel.cancelDownload(
+            DOWNLOAD_STATE_PARSING,
+            DOWNLOAD_STATE_DOWNLOADING -> {
+                viewModel.cancelDownload(
                     data.download.url,
                     data.download.fileName,
                     data.download.getMediaType()
                 )
-                downloadRecordViewModel.delete(data.download)
-            }
-            DOWNLOAD_STATE_DOWNLOADING -> {
-                val id = "${data.download.url}_${data.download.fileExtension}"
-                YoutubeDL.getInstance().destroyProcessById(id)
+                viewModel.pause(data.download)
             }
             DOWNLOAD_STATE_DONE -> {
                 requireActivity().showPopupMenu(view, R.menu.menu_download_record) { item ->
@@ -161,15 +156,12 @@ class DownloadCategoryFragment : Fragment(), DownloadAdapter.OnDownloadRecordCli
                         val deleteRows =
                             contentResolver.delete(uri, projection, arrayOf(file.absolutePath))
                         file.deleteOnExit()
-                        downloadRecordViewModel.delete(data.download)
+                        viewModel.deleteDownloadRecord(data.download)
                         true
                     } else {
                         false
                     }
                 }
-            }
-            else -> {
-
             }
         }
     }

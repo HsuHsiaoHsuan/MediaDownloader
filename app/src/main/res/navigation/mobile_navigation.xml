@@ -16,12 +16,6 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_search"
-        android:name="idv.hsu.media.downloader.ui.search.SearchFragment"
-        android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
         android:id="@+id/navigation_download"
         android:name="idv.hsu.media.downloader.ui.download.DownloadFragment"
         android:label="@string/title_download"
@@ -29,9 +23,9 @@
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="idv.hsu.media.downloader.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:name="idv.hsu.media.downloader.ui.settings.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings" />
 
     <dialog
         android:id="@+id/nav_sheet_more_action_on_search_record"

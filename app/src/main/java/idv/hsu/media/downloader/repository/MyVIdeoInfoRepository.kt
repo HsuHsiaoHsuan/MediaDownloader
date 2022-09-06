@@ -19,4 +19,8 @@ class MyVideoInfoRepository @Inject constructor(
     suspend fun addMyVideoInfo(myVideoInfo: MyVideoInfo) = withContext(Dispatchers.IO) {
         repoMyVideoInfoDao.addMyVideoInfo(myVideoInfo)
     }
+
+    suspend fun delMyVideoInfo(myVideoInfo: MyVideoInfo) = withContext(Dispatchers.IO) {
+        repoMyVideoInfoDao.delMyVideoInfo(myVideoInfo)
+    }
 }

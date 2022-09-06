@@ -13,6 +13,10 @@ interface SearchRecordDao {
     @Query("SELECT * FROM search_record_table WHERE search_type = :searchType ORDER BY search_time DESC")
     fun getSearchAndInfoByType(@SearchType searchType: Int): Flow<List<SearchAndInfo>>
 
+    @Transaction
+    @Query("SELECT * FROM search_record_table ORDER BY search_time DESC")
+    fun getSearchAndInfoAll(): Flow<List<SearchAndInfo>>
+
     @Insert(entity = SearchRecord::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSearchRecord(data: SearchRecord): Long
 

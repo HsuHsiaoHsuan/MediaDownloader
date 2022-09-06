@@ -11,8 +11,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import idv.hsu.media.downloader.databinding.SheetMoreActionOnSearchRecordBinding
 import idv.hsu.media.downloader.ext.reformatFileName
-import idv.hsu.media.downloader.viewmodel.GetMediaViewModel
-import idv.hsu.media.downloader.viewmodel.SearchRecordViewModel
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_AUDIO
 import idv.hsu.media.downloader.worker.MEDIA_TYPE_VIDEO
 
@@ -24,8 +22,7 @@ class MoreActionOnSearchRecordSheet : BottomSheetDialogFragment() {
 
     private val navArgs: MoreActionOnSearchRecordSheetArgs by navArgs()
 
-    private val getMediaViewModel: GetMediaViewModel by viewModels()
-    private val searchRecordViewModel: SearchRecordViewModel by viewModels()
+    private val viewModel: MoreActionOnSearchRecordViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,15 +42,15 @@ class MoreActionOnSearchRecordSheet : BottomSheetDialogFragment() {
             data.myVideoInfo?.title?.reformatFileName() ?: System.currentTimeMillis().toString()
 
         binding.textDownloadVideo.setOnClickListener {
-            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
+            viewModel.downloadMedia(url, title, MEDIA_TYPE_VIDEO)
             findNavController().popBackStack()
         }
         binding.textDownloadAudio.setOnClickListener {
-            getMediaViewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
+            viewModel.downloadMedia(url, title, MEDIA_TYPE_AUDIO)
             findNavController().popBackStack()
         }
         binding.textDeleteRecord.setOnClickListener {
-            searchRecordViewModel.deleteSearch(data.search)
+            viewModel.delSearchRecord(data)
             findNavController().popBackStack()
         }
     }

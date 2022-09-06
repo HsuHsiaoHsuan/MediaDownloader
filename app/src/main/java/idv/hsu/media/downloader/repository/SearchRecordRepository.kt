@@ -17,9 +17,11 @@ class SearchRecordRepository @Inject constructor(
     val allSearchByInput: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoByType(
         SEARCH_TYPE_TEXT_INPUT)
 
-    val allSearchByWebview: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoByType(
+    val allSearchByWebView: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoByType(
         SEARCH_TYPE_WEBVIEW
     )
+
+    val allSearch: Flow<List<SearchAndInfo>> = searchDao.getSearchAndInfoAll()
 
     suspend fun addSearchRecord(record: SearchRecord) = withContext(Dispatchers.IO) {
         searchDao.addSearchRecord(record)
