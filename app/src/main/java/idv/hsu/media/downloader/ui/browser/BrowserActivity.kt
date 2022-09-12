@@ -5,6 +5,7 @@ import android.util.TypedValue
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -71,11 +72,16 @@ class BrowserActivity : AppCompatActivity() {
             val url = binding.webview.url
             if (url != null) {
                 viewModel.getMediaInfo(url)
+                Toast.makeText(this@BrowserActivity, "Added to list!", Toast.LENGTH_LONG).show()
             }
         }
 
         intent.getStringExtra(EXTRA_URL)?.also {
             binding.webview.loadUrl(it)
+        }
+
+        binding.buttonClose.setOnClickListener {
+            finish()
         }
     }
 
