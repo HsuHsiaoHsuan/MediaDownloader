@@ -8,7 +8,6 @@ import android.webkit.WebViewClient
 fun WebView.initWebView(webViewClient: WebViewClient?, webChromeClient: WebChromeClient?) {
     settings.apply {
         javaScriptEnabled = true
-        setAppCacheEnabled(true)
         domStorageEnabled = true
         setSupportMultipleWindows(true)
         cacheMode = WebSettings.LOAD_DEFAULT
