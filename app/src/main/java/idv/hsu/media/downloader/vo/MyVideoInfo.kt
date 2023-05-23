@@ -29,9 +29,9 @@ data class MyVideoInfo(
 fun VideoInfo.toMyVideoInfo(userInputUrl: String): MyVideoInfo =
     MyVideoInfo(
         url = userInputUrl,
-        thumbnail = this.thumbnail,
-        title = this.title,
-        uploader = this.uploader,
+        thumbnail = this.thumbnail ?: "",
+        title = this.title ?: "",
+        uploader = this.uploader ?: "",
         duration = this.duration,
         convertState = CONVERT_STATE_DONE
     )
